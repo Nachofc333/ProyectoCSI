@@ -5,6 +5,6 @@ import sys
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    windowExample = Controlador_login()
-    windowExample.show()
+    login = Controlador_login()
+    login.show()
     sys.exit(app.exec_())
