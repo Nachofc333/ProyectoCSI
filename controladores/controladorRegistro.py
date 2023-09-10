@@ -1,4 +1,4 @@
-from vistas.RegistroW import Ui_registro
+from interfaces.RegistroW import Ui_registro
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 
@@ -16,7 +16,7 @@ class Controlador_regristro(QtWidgets.QMainWindow):
 
     def validarUsuario(self):
         """
-        Tenemso que hacer que se  compruebe q el usuario no esta en la base de datos
+        Tenemos que hacer que se  compruebe q el usuario no esta en la base de datos
         """
         self.validarContraseña()
 
@@ -30,7 +30,7 @@ class Controlador_regristro(QtWidgets.QMainWindow):
 
     def crearUsuario(self):
         """
-        Cree el usuario y se guarde en la base de datos
+        Tenemos q hacer q cree el usuario y se guarde en la base de datos
         """
         self.close()
         from controladores.controladorLogin import Controlador_login

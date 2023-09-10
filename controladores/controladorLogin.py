@@ -1,4 +1,4 @@
-from vistas.InicioW import Ui_login
+from interfaces.InicioW import Ui_login
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from controladores.controladorRegistro import Controlador_regristro
