@@ -1,6 +1,8 @@
 from interfaces.RegistroW import Ui_registro
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMessageBox
+from almacen.jsonAlmacen import JsonAlmacen
+from usuario.usuario import Usuario
 
 class Controlador_regristro(QtWidgets.QMainWindow):
 
@@ -10,6 +12,7 @@ class Controlador_regristro(QtWidgets.QMainWindow):
         self.ui=Ui_registro()
         self.ui.setupUi(self)
         self.InicializarGui()
+        self.almacen = JsonAlmacen()
 
     def InicializarGui(self):
         self.ui.btnRegistrar.clicked.connect(self.validarUsuario)
@@ -18,22 +21,23 @@ class Controlador_regristro(QtWidgets.QMainWindow):
         """
         Tenemos que hacer que se  compruebe q el usuario no esta en la base de datos
         """
-        self.validarContraseña()
+        nombre = self.ui.txt_user.text()
+        ### buscar el usuatio en el almacen si no lo encuentra lo crea
+        self.validarContraseña(nombre)
 
-    def validarContraseña(self):
+    def validarContraseña(self, nombre):
         contraseña = self.ui.txt_password.text()
         comprobar = self.ui.txt_password_2.text()
         if contraseña != comprobar:
             alerta = QMessageBox.information(self, 'Error', 'Las contraseñas no coinciden', QMessageBox.Ok)
         else:
-            self.crearUsuario()
+            self.crearUsuario(nombre, contraseña)
 
-    def crearUsuario(self):
+    def crearUsuario(self, nombre, contraseña):
         """
         Tenemos q hacer q cree el usuario y se guarde en la base de datos
         """
+        telefono  = self.ui.txt_telefono.text()
+        usuario = Usuario (nombre, contraseña, telefono)
+        self.almacen.add_item(usuario)
         self.close()
-        from controladores.controladorLogin import Controlador_login
-        login = Controlador_login()
-        login.show()
-
