@@ -8,5 +8,3 @@ class Usuario():
         return {"nombre": self.nombre, "contraseña": self.nombre, "telefono": self.telefono}
 
 
-u = Usuario("pedro", "asdasd", "ASDAS")
-print(u.__dict__())

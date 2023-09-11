@@ -10,7 +10,7 @@ class Controlador_regristro(QtWidgets.QMainWindow):
         super().__init__()
 
         self.ui=Ui_registro()
-        self.ui.setupUi(self)
+        self.ui.setupUi(self)   
         self.InicializarGui()
         self.almacen = JsonAlmacen()
 
@@ -23,6 +23,8 @@ class Controlador_regristro(QtWidgets.QMainWindow):
         """
         nombre = self.ui.txt_user.text()
         ### buscar el usuatio en el almacen si no lo encuentra lo crea
+        if not self.almacen.find_data(nombre):
+            alerta = QMessageBox.information(self, 'Error', 'El usuario ya existe', QMessageBox.Ok)
         self.validarContraseña(nombre)
 
     def validarContraseña(self, nombre):

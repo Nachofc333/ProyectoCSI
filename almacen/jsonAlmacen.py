@@ -6,7 +6,7 @@ class JsonAlmacen(JsonStoreMaster):
     """Clase JsonDeliverStore"""
     _FILE_PATH = JSON_FILES_PATH + "almacen.json"
     _data_list = []
-    _ID_FIELD = ""
+    _ID_FIELD = "nombre"
 
     def __init__(self)->None:
         """Constructor de JsonDeliverStore"""
