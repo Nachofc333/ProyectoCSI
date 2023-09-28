@@ -26,7 +26,7 @@ class Controlador_login(QtWidgets.QMainWindow):
             kdf = PBKDF2HMAC(
                 algorithm=hashes.SHA256(),
                 length=32,
-                salt=salt,
+                salt=bytes(salt, "utf-8"),
                 iterations=480000,
             )
             if not kdf.verify(bytes(password, "utf-8"), bytes(match["password"], "utf-8")):
