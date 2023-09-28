@@ -41,5 +41,7 @@ class JsonStoreMaster():
     def add_item(self, item:any)->None:
         """Añadir producto"""
         self.load_store()
-        self._data_list.append(item.__dict__)
+        self._data_list.append(item.__dict__())
+        print(self._data_list)
         self.save_store()
+        print(self._data_list)

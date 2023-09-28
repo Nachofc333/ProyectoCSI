@@ -4,6 +4,10 @@ from PyQt5.QtWidgets import QMessageBox
 from almacen.jsonAlmacen import JsonAlmacen
 from usuario.usuario import Usuario
 
+import os
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+
 class Controlador_regristro(QtWidgets.QMainWindow):
 
     def __init__(self):
@@ -24,8 +28,10 @@ class Controlador_regristro(QtWidgets.QMainWindow):
         nombre = self.ui.txt_user.text()
         ### buscar el usuatio en el almacen si no lo encuentra lo crea
         if not self.almacen.find_data(nombre):
+            self.validarContraseña(nombre)
+        else:
             alerta = QMessageBox.information(self, 'Error', 'El usuario ya existe', QMessageBox.Ok)
-        self.validarContraseña(nombre)
+
 
     def validarContraseña(self, nombre):
         contraseña = self.ui.txt_password.text()
@@ -33,13 +39,25 @@ class Controlador_regristro(QtWidgets.QMainWindow):
         if contraseña != comprobar:
             alerta = QMessageBox.information(self, 'Error', 'Las contraseñas no coinciden', QMessageBox.Ok)
         else:
-            self.crearUsuario(nombre, contraseña)
+            derivación, salt = self.derivarContraseña(contraseña)
+            self.crearUsuario(nombre, derivación, salt)
 
-    def crearUsuario(self, nombre, contraseña):
+    def derivarContraseña(self, contraseña):
+        salt = os.urandom(16)
+        # derive
+        kdf = PBKDF2HMAC(
+            algorithm=hashes.SHA256(),
+            length=32,
+            salt=salt,
+            iterations=480000,
+        )
+        key = kdf.derive(contraseña)
+        return key, salt
+    def crearUsuario(self, nombre, contraseña, salt):
         """
         Tenemos q hacer q cree el usuario y se guarde en la base de datos
         """
-        telefono  = self.ui.txt_telefono.text()
-        usuario = Usuario (nombre, contraseña, telefono)
+        telefono = self.ui.txt_telefono.text()
+        usuario = Usuario(nombre, contraseña, telefono, salt)
         self.almacen.add_item(usuario)
         self.close()

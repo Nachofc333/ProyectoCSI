@@ -1,10 +1,10 @@
 """MODULES"""
 from almacen.jsonMaster import JsonStoreMaster
 import os
-JSON_FILES_PATH = os.path.join(os.path.dirname(__file__), "../../../../almacen/")
+JSON_FILES_PATH = os.path.dirname(__file__)
 class JsonAlmacen(JsonStoreMaster):
     """Clase JsonDeliverStore"""
-    _FILE_PATH = JSON_FILES_PATH + "almacen.json"
+    _FILE_PATH = JSON_FILES_PATH +"/almacen.json"
     _data_list = []
     _ID_FIELD = "nombre"
 
