@@ -27,7 +27,9 @@ class Controlador_regristro(QtWidgets.QMainWindow):
         """
         nombre = self.ui.txt_user.text()
         ### buscar el usuatio en el almacen si no lo encuentra lo crea
-        if not self.almacen.find_data(nombre):
+        match =self.almacen.find_data(nombre)
+        print(match)
+        if not match:
             self.validarContraseña(nombre)
         else:
             alerta = QMessageBox.information(self, 'Error', 'El usuario ya existe', QMessageBox.Ok)

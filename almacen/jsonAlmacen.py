@@ -11,4 +11,6 @@ class JsonAlmacen(JsonStoreMaster):
     def __init__(self)->None:
         """Constructor de JsonDeliverStore"""
         super(JsonStoreMaster, self).__init__()
-
+    """def find_pass(self, data):
+        self.load_store()
+        return self.find_data(data)"""
