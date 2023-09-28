@@ -20,17 +20,19 @@ class Controlador_login(QtWidgets.QMainWindow):
     def validarCredenciales(self):
         usuario = self.ui.txt_user.text()
         password = self.ui.txt_password.text()
-        match = self.almacen.find_data(usuario)
+        match = self.almacen.find_name(usuario)
         if match:
-            salt = match.salt
+            salt = match["salt"]
             kdf = PBKDF2HMAC(
                 algorithm=hashes.SHA256(),
                 length=32,
                 salt=salt,
                 iterations=480000,
             )
-            if not kdf.verify(bytes(password), match.password):
+            if not kdf.verify(bytes(password, "utf-8"), bytes(match["password"], "utf-8")):
                 self.abrirVentanaPrincipal()
+            else:
+                alerta = QMessageBox.information(self, 'Error', 'Contraseña incorrecta', QMessageBox.Ok)
         else:
             alerta = QMessageBox.information(self, 'Error', 'Usuario no encontrado', QMessageBox.Ok)
 

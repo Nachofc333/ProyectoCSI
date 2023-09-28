@@ -27,8 +27,7 @@ class Controlador_regristro(QtWidgets.QMainWindow):
         """
         nombre = self.ui.txt_user.text()
         ### buscar el usuatio en el almacen si no lo encuentra lo crea
-        match =self.almacen.find_data(nombre)
-        print(match)
+        match =self.almacen.find_name(nombre)
         if not match:
             self.validarContraseña(nombre)
         else:
@@ -54,7 +53,6 @@ class Controlador_regristro(QtWidgets.QMainWindow):
             iterations=480000,
         )
         key = kdf.derive(bytes(password, "utf-8"))
-        print(salt)
         return key, salt
     def crearUsuario(self, nombre, contraseña, salt):
         """
