@@ -42,7 +42,7 @@ class Controlador_regristro(QtWidgets.QMainWindow):
             derivación, salt = self.derivarContraseña(contraseña)
             self.crearUsuario(nombre, derivación, salt)
 
-    def derivarContraseña(self, contraseña):
+    def derivarContraseña(self, password):
         salt = os.urandom(16)
         # derive
         kdf = PBKDF2HMAC(
@@ -51,7 +51,8 @@ class Controlador_regristro(QtWidgets.QMainWindow):
             salt=salt,
             iterations=480000,
         )
-        key = kdf.derive(contraseña)
+        key = kdf.derive(bytes(password, "utf-8"))
+        print(salt)
         return key, salt
     def crearUsuario(self, nombre, contraseña, salt):
         """

@@ -1,0 +1,18 @@
+[
+  {
+    "nombre": "d",
+    "password": "d",
+    "telefono": "d"
+  },
+  {
+    "nombre": "3",
+    "password": "3",
+    "telefono": "d"
+  },
+  {
+    "nombre": "g",
+    "password": "g",
+    "telefono": "g",
+    "salt": "b'\\xc4@M\\xe1\\xd9\\x1f\\x9d\\xf0\\xc1I\\x96\\xed\\x1e\\x80\\xeb\\xd9'"
+  }
+]
