@@ -61,4 +61,5 @@ class Controlador_regristro(QtWidgets.QMainWindow):
         telefono = self.ui.txt_telefono.text()
         usuario = Usuario(nombre, contraseña, telefono, salt)
         self.almacen.add_item(usuario)
+        self.almacen.load_store()
         self.close()

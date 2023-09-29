@@ -26,12 +26,13 @@ class Controlador_login(QtWidgets.QMainWindow):
             kdf = PBKDF2HMAC(
                 algorithm=hashes.SHA256(),
                 length=32,
-                salt=bytes(salt, "utf-8"),
+                salt=salt.encode('latin-1'),
                 iterations=480000,
             )
-            if not kdf.verify(bytes(password, "utf-8"), bytes(match["password"], "utf-8")):
+            try:
+                kdf.verify(password.encode('latin-1'), match["password"].encode('latin-1'))
                 self.abrirVentanaPrincipal()
-            else:
+            except:
                 alerta = QMessageBox.information(self, 'Error', 'Contraseña incorrecta', QMessageBox.Ok)
         else:
             alerta = QMessageBox.information(self, 'Error', 'Usuario no encontrado', QMessageBox.Ok)
