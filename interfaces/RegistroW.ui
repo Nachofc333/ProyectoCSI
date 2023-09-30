@@ -181,6 +181,9 @@ font: 700 14pt &quot;Arial&quot;;</string>
     <property name="text">
      <string>Registrar usuario</string>
     </property>
+    <property name="shortcut">
+     <string>Return</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
