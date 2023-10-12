@@ -2,6 +2,7 @@ from interfaces.InicioW import Ui_login
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from controladores.controladorRegistro import Controlador_regristro
+from controladores.controladorPedido import Controlador_pedido
 from almacen.jsonAlmacen import JsonAlmacen
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -12,6 +13,7 @@ class Controlador_login(QtWidgets.QMainWindow):
         self.ui=Ui_login()
         self.ui.setupUi(self)
         self.controlador_registro = Controlador_regristro()
+        self.controlador_pedido = Controlador_pedido()
         self.InicializarGui()
         self.almacen = JsonAlmacen()
     def InicializarGui(self):
@@ -41,5 +43,5 @@ class Controlador_login(QtWidgets.QMainWindow):
         self.controlador_registro.show()
 
     def abrirVentanaPrincipal(self):
-        print("Todo piola")
+        self.controlador_pedido.show()
         self.close()
