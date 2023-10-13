@@ -10,9 +10,6 @@ class Pedido():
         self.tarta = tarta
         id_str = json.dumps(self.__dict__(), sort_keys=True)
         self.id = hashlib.sha256(id_str.encode()).hexdigest()
-        print(self)
-        print(self.id)
-        print(self.__dict__())
     def __str__(self):
         return "Pedido:" + json.dumps(self.__dict__(), sort_keys=True)
 

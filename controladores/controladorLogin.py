@@ -1,4 +1,5 @@
 from interfaces.InicioW import Ui_login
+from usuario.usuario import Usuario
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from controladores.controladorRegistro import Controlador_regristro
@@ -13,7 +14,7 @@ class Controlador_login(QtWidgets.QMainWindow):
         self.ui=Ui_login()
         self.ui.setupUi(self)
         self.controlador_registro = Controlador_regristro()
-        self.controlador_pedido = Controlador_pedido()
+        self.controlador_pedido = None
         self.InicializarGui()
         self.almacen = JsonAlmacen()
     def InicializarGui(self):
@@ -23,6 +24,11 @@ class Controlador_login(QtWidgets.QMainWindow):
         usuario = self.ui.txt_user.text()
         password = self.ui.txt_password.text()
         match = self.almacen.find_name(usuario)
+        current_user = Usuario(match["nombre"],
+                               match["password"].encode("latin-1"),
+                               match["telefono"],
+                               match["salt"].encode("latin-1"))
+        self.controlador_pedido = Controlador_pedido(current_user)
         if match:
             salt = match["salt"]
             kdf = PBKDF2HMAC(
@@ -33,7 +39,7 @@ class Controlador_login(QtWidgets.QMainWindow):
             )
             try:
                 kdf.verify(password.encode('latin-1'), match["password"].encode('latin-1'))
-                self.abrirVentanaPrincipal()
+                self.abrirVentanaPrincipal(match)
             except:
                 alerta = QMessageBox.information(self, 'Error', 'Contraseña incorrecta', QMessageBox.Ok)
         else:
@@ -42,6 +48,6 @@ class Controlador_login(QtWidgets.QMainWindow):
     def registrarUsuario(self):
         self.controlador_registro.show()
 
-    def abrirVentanaPrincipal(self):
+    def abrirVentanaPrincipal(self, user):
         self.controlador_pedido.show()
         self.close()
