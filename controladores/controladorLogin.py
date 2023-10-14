@@ -23,6 +23,9 @@ class Controlador_login(QtWidgets.QMainWindow):
     def validarCredenciales(self):
         usuario = self.ui.txt_user.text()
         password = self.ui.txt_password.text()
+        if not usuario or not password:
+            QMessageBox.information(self, 'Error', 'Por favor, complete los campos', QMessageBox.Ok)
+            return
         match = self.almacen.find_name(usuario)
         try:
             current_user = Usuario(match["nombre"],
