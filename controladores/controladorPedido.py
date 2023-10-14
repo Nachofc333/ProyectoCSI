@@ -1,4 +1,4 @@
-from interfaces.PedidoW import Ui_Pedido
+from interfaces.PedidoW2 import Ui_Pedido
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from pedido.pedido import Pedido
@@ -27,7 +27,7 @@ class Controlador_pedido(QtWidgets.QMainWindow):
 
     def comprobarPlatos(self):
         platos = [self.ui.Pasta.checkState(), self.ui.Filete.checkState(), self.ui.Lentejas.checkState(),
-                  self.ui.Hamburguesa.checkState(), self.ui.Tarta.checkState()]
+                  self.ui.Hamburguesa.checkState()]
         if not any(plato > 0 for plato in platos):
             QMessageBox.information(self, 'Error', 'Selecciona al menos un plato', QMessageBox.Ok)
             return False
@@ -40,7 +40,8 @@ class Controlador_pedido(QtWidgets.QMainWindow):
             filete = self.ui.Filete.checkState() -1 if self.ui.Filete.checkState() > 0 else 0,
             lentejas = self.ui.Lentejas.checkState() -1 if self.ui.Lentejas.checkState() > 0 else 0,
             hamburguesa = self.ui.Hamburguesa.checkState() -1 if self.ui.Hamburguesa.checkState() > 0 else 0,
-            tarta = self.ui.Tarta.checkState() -1 if self.ui.Tarta.checkState() >0 else 0)
+            tarta = self.ui.Tarta.checkState() -1 if self.ui.Tarta.checkState() >0 else 0,
+            brownie = self.ui.Brownie.checkState() -1 if self.ui.Brownie.checkState() else 0)
 
         pedido_cifrado = PedidoCifrado(self.user.encriptar(pedido))
         self.almacen.add_item(pedido_cifrado)
