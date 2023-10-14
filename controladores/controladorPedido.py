@@ -26,11 +26,12 @@ class Controlador_pedido(QtWidgets.QMainWindow):
     def crearPedido(self):
         pedido = Pedido(
             restaurante=self.ui.SelectorRestaurante.currentText(),
-            pasta = self.ui.Pasta.checkState(),
-            filete = self.ui.Filete.checkState(),
-            lentejas = self.ui.Lentejas.checkState(),
-            hamburguesa = self.ui.Hamburguesa.checkState(),
-            tarta = self.ui.Tarta.checkState())
+            pasta = self.ui.Pasta.checkState() -1 if self.ui.Pasta.checkState() >0 else 0,
+            filete = self.ui.Filete.checkState() -1 if self.ui.Filete.checkState() > 0 else 0,
+            lentejas = self.ui.Lentejas.checkState() -1 if self.ui.Lentejas.checkState() > 0 else 0,
+            hamburguesa = self.ui.Hamburguesa.checkState() -1 if self.ui.Hamburguesa.checkState() > 0 else 0,
+            tarta = self.ui.Tarta.checkState() -1 if self.ui.Tarta.checkState() >0 else 0)
+
         pedido_cifrado = PedidoCifrado(self.user.encriptar(pedido))
         self.almacen.add_item(pedido_cifrado)
         self.terminar()
