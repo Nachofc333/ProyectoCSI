@@ -20,9 +20,19 @@ class Controlador_pedido(QtWidgets.QMainWindow):
     def ComprobarRestaurante(self):
         restaurante = self.ui.SelectorRestaurante.currentText()
         if restaurante != "Selecciona restaurante":
-            self.crearPedido()
+            if self.comprobarPlatos():
+                self.crearPedido()
         else:
             alerta = QMessageBox.information(self, 'Error', 'Selecciona un restaurante válido', QMessageBox.Ok)
+
+    def comprobarPlatos(self):
+        platos = [self.ui.Pasta.checkState(), self.ui.Filete.checkState(), self.ui.Lentejas.checkState(),
+                  self.ui.Hamburguesa.checkState(), self.ui.Tarta.checkState()]
+        if not any(plato > 0 for plato in platos):
+            QMessageBox.information(self, 'Error', 'Selecciona al menos un plato', QMessageBox.Ok)
+            return False
+        return True
+
     def crearPedido(self):
         pedido = Pedido(
             restaurante=self.ui.SelectorRestaurante.currentText(),
