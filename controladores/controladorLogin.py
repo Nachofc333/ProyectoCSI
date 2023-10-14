@@ -24,11 +24,16 @@ class Controlador_login(QtWidgets.QMainWindow):
         usuario = self.ui.txt_user.text()
         password = self.ui.txt_password.text()
         match = self.almacen.find_name(usuario)
-        current_user = Usuario(match["nombre"],
+        try:
+            current_user = Usuario(match["nombre"],
                                match["password"].encode("latin-1"),
                                match["telefono"],
                                match["salt"].encode("latin-1"))
-        self.controlador_pedido = Controlador_pedido(current_user)
+            self.controlador_pedido = Controlador_pedido(current_user)
+        except:
+            alerta = QMessageBox.information(self, 'Error', 'Usuario no encontrado', QMessageBox.Ok)
+
+
         if match:
             salt = match["salt"]
             kdf = PBKDF2HMAC(
@@ -42,8 +47,6 @@ class Controlador_login(QtWidgets.QMainWindow):
                 self.abrirVentanaPrincipal(match)
             except:
                 alerta = QMessageBox.information(self, 'Error', 'Contraseña incorrecta', QMessageBox.Ok)
-        else:
-            alerta = QMessageBox.information(self, 'Error', 'Usuario no encontrado', QMessageBox.Ok)
 
     def registrarUsuario(self):
         self.controlador_registro.show()
