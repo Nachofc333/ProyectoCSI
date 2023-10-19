@@ -25,11 +25,14 @@ class RestauranteMaster(QtWidgets.QMainWindow):
                 label=None))
         self._key = key
 
-    def descifrarPedido(self,ct, signature):  #funcion encargada de descifrar el pedido con la key simetrica descifrada
+    def descifrarPedido(self,ct, cs):  #funcion encargada de descifrar el pedido con la key simetrica descifrada
+        cipher = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
+        decryptor = cipher.decryptor()
+        signature = decryptor.update(cs) + decryptor.finalize()
         h = hmac.HMAC(self._key, hashes.SHA256())
-        h.update(ct)
+        h.update(signature)
         try:
-            h.verify(signature)
+            h.verify(cs)
             cipher = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
             decryptor = cipher.decryptor()
             plaintext = decryptor.update(ct) + decryptor.finalize()
