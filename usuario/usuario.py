@@ -42,16 +42,26 @@ class Usuario():
         return False
 
     def encriptarPedido(self, pedido, restaurante, key, iv):  # funcion encargada de encriptar el pedido de forma simetrica
-        h = hmac.HMAC(self._key, hashes.SHA256())  # autenticacion de mensaje
-        h.update(pedido)
+        h = hmac.HMAC(self._key, hashes.SHA256())
+        h.update(str(pedido).encode('latin-1'))
         signature = h.finalize()
+
         cipher = Cipher(algorithms.AES(key), modes.CBC(iv))
         encryptor = cipher.encryptor()
-        padder = padding.PKCS7(128).padder()
-        padded_data = padder.update(str(pedido).encode("latin-1")) + padder.finalize()
-        padded_signature = padder.update(signature) + padder.finalize()
-        cs = encryptor.update(padded_signature) + encryptor.finalize()
+
+        # Crear un nuevo padder para el pedido
+        padder_pedido = padding.PKCS7(128).padder()
+        padded_data = padder_pedido.update(str(pedido).encode("latin-1")) + padder_pedido.finalize()
         ct = encryptor.update(padded_data) + encryptor.finalize()
+
+        # Crear un nuevo padder para la firma
+        padder_signature = padding.PKCS7(128).padder()
+        padded_signature = padder_signature.update(signature)
+
+        # Crear un nuevo encryptor para la firma
+        cipher_signature = Cipher(algorithms.AES(key), modes.CBC(iv))
+        encryptor_signature = cipher_signature.encryptor()
+        cs = encryptor_signature.update(padded_signature) + encryptor_signature.finalize()
         if restaurante.descifrarPedido(ct, cs):  # el restaurante descifrara el pedido con la key descifrada
             return ct
         return False

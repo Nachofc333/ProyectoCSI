@@ -28,16 +28,22 @@ class RestauranteMaster(QtWidgets.QMainWindow):
     def descifrarPedido(self,ct, cs):  #funcion encargada de descifrar el pedido con la key simetrica descifrada
         cipher = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
         decryptor = cipher.decryptor()
-        signature = decryptor.update(cs) + decryptor.finalize()
+        plaintext = decryptor.update(ct) + decryptor.finalize()
+
+        # Quitar el padding
+        plaintextf = plaintext.rstrip(plaintext[-1:]).decode('latin-1')
+        # Crear un nuevo decryptor para la firma
+        cipher_signature = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
+        decryptor_signature = cipher_signature.decryptor()
+        signature = decryptor_signature.update(cs) + decryptor_signature.finalize()
+
         h = hmac.HMAC(self._key, hashes.SHA256())
-        h.update(signature)
+        h.update(plaintextf.encode("latin-1"))
         try:
-            h.verify(cs)
-            cipher = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
-            decryptor = cipher.decryptor()
-            plaintext = decryptor.update(ct) + decryptor.finalize()
-            alerta = QMessageBox.information(self, 'Pedido', plaintext.decode("latin-1"), QMessageBox.Ok)
+            h.verify(signature)
+            alerta = QMessageBox.information(self, 'Pedido', plaintextf, QMessageBox.Ok)
             return True
-        except:
+        except Exception as e:
+            print(e)
             alerta = QMessageBox.information(self, 'Error', "Pedido modificado", QMessageBox.Ok)
             return False
