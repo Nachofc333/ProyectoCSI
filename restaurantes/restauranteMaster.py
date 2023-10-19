@@ -4,16 +4,15 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5 import QtWidgets
 import os
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from cryptography.hazmat.primitives import hashes, hmac
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 class RestauranteMaster(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self._private_key = ""
         self.public_key = ""
-        self.iv = ""
-        self._key = ""
-
-
+        self.iv = b""
+        self._key = b""
 
     def descifrarKEY(self, key):
         key = self._private_key.decrypt(
@@ -23,17 +22,16 @@ class RestauranteMaster(QtWidgets.QMainWindow):
                 algorithm=hashes.SHA256(),
                 label=None))
         self._key = key
-    def descifrarPedido(self,ct):
-        cipher = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
-        decryptor = cipher.decryptor()
-        plaintext = decryptor.update(ct) + decryptor.finalize()
-        alerta = QMessageBox.information(self, 'Pedido', plaintext.decode("latin-1"), QMessageBox.Ok)
-
-    """def descifrarPedido(self, ct, nonce):
-        aesgcm = AESGCM(self._key)
+    def descifrarPedido(self,ct, signature):
+        h = hmac.HMAC(self._key, hashes.SHA256())
+        h.update(ct)
         try:
-            plaintext = aesgcm.decrypt(nonce, ct, None)
+            h.verify(signature)
+            cipher = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
+            decryptor = cipher.decryptor()
+            plaintext = decryptor.update(ct) + decryptor.finalize()
             alerta = QMessageBox.information(self, 'Pedido', plaintext.decode("latin-1"), QMessageBox.Ok)
+            return True
         except:
-            print("Tag inválido. Los datos han sido manipulados.")
-"""
+            alerta = QMessageBox.information(self, 'Error', "Pedido modificado", QMessageBox.Ok)
+            return False

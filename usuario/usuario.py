@@ -6,6 +6,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding as pd
 import os
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from cryptography.hazmat.primitives import hashes, hmac
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
@@ -34,7 +35,10 @@ class Usuario():
         else:
             print("error")
         self.encriptarKEY(restaurante, self._key)
-        return self.encriptarPedido(pedido, restaurante, self._key, restaurante.iv)
+        ct = self.encriptarPedido(pedido, restaurante, self._key, restaurante.iv)
+        if ct:
+            return ct
+        return False
 
     def encriptarPedido(self, pedido, restaurante, key, iv):
         cipher = Cipher(algorithms.AES(key), modes.CBC(iv))
@@ -42,15 +46,13 @@ class Usuario():
         padder = padding.PKCS7(128).padder()
         padded_data = padder.update(str(pedido).encode("latin-1")) + padder.finalize()
         ct = encryptor.update(padded_data) + encryptor.finalize()
-        restaurante.descifrarPedido(ct)
-        return ct
+        h = hmac.HMAC(self._key, hashes.SHA256())
+        h.update(ct)
+        signature = h.finalize()
+        if restaurante.descifrarPedido(ct, signature):
+            return ct
+        return False
 
-    """def encriptarPedido(self, pedido, restaurante, key):
-        nonce = os.urandom(12)
-        aesgcm = AESGCM(key)
-        ct = aesgcm.encrypt(nonce, str(pedido).encode("latin-1"), None)
-        restaurante.descifrarPedido(nonce, ct)
-        return ct"""
     def encriptarKEY(self, restaurante, key):
         pk_restaurante = restaurante.public_key
         message = key
@@ -61,29 +63,3 @@ class Usuario():
                 algorithm=hashes.SHA256(),
                 label=None))
         restaurante.descifrarKEY(cipherkey)
-
-
-    """"def encriptarKEY(self, pedido):
-        restaurante_pedido = pedido.restaurante
-        restaurante = None
-        if restaurante_pedido == "Restaurante1":
-            restaurante = Restaurante1()
-        elif restaurante_pedido == "Restaurante2":
-            restaurante = Restaurante2()
-        elif restaurante_pedido == "Restaurante3":
-            restaurante = Restaurante3()
-        elif restaurante_pedido == "Restaurante4":
-            restaurante = Restaurante4()
-        else:
-            print("error")
-        pk_restaurante = restaurante.public_key
-        message = str(pedido).encode("latin-1")
-        ciphertext = pk_restaurante.encrypt(
-                message,
-                padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=None))
-        restaurante.descifrar(ciphertext)
-        return ciphertext
-"""

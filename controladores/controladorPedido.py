@@ -42,10 +42,11 @@ class Controlador_pedido(QtWidgets.QMainWindow):
             hamburguesa = self.ui.Hamburguesa.checkState() -1 if self.ui.Hamburguesa.checkState() > 0 else 0,
             tarta = self.ui.Tarta.checkState() -1 if self.ui.Tarta.checkState() >0 else 0,
             brownie = self.ui.Brownie.checkState() -1 if self.ui.Brownie.checkState() else 0)
-
-        pedido_cifrado = PedidoCifrado(self.user.encriptar(pedido))
-        self.almacen.add_item(pedido_cifrado)
-        self.terminar()
+        ct = self.user.encriptar(pedido)
+        if ct:
+            pedido_cifrado = PedidoCifrado(ct)
+            self.almacen.add_item(pedido_cifrado)
+            self.terminar()
 
     def terminar(self):
         alerta =  QMessageBox.information(self, 'Exito', 'Pedido realizado con éxito', QMessageBox.Ok)
