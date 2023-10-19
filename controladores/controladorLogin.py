@@ -29,19 +29,19 @@ class Controlador_login(QtWidgets.QMainWindow):
         if not usuario or not password:
             QMessageBox.information(self, 'Error', 'Por favor, complete los campos', QMessageBox.Ok)
             return
-        match = self.almacen.find_name(usuario)
+        match = self.almacen.find_name(usuario)  # Busca al usuario en la baswe de datos
         try:
             current_user = Usuario(match["nombre"],
                                match["password"].encode("latin-1"),
                                match["telefono"],
                                match["salt"].encode("latin-1"))
-            self.controlador_pedido = Controlador_pedido(current_user)
+            self.controlador_pedido = Controlador_pedido(current_user)  # Abre la seccion del pedido si se ha iniciado sesion
         except:
             alerta = QMessageBox.information(self, 'Error', 'Usuario no encontrado', QMessageBox.Ok)
 
 
         if match:
-            salt = match["salt"]
+            salt = match["salt"]  # Se crea un salt al iniciar sesion para guardar una derivacion de la contraseña
             kdf = PBKDF2HMAC(
                 algorithm=hashes.SHA256(),
                 length=32,

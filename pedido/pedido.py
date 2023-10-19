@@ -14,7 +14,7 @@ class Pedido():
         self.brownie = brownie
         self.fecha = datetime.utcnow().__str__()
         id_str = json.dumps(self.__dict__(), sort_keys=True)
-        self.id = hashlib.sha256(id_str.encode()).hexdigest()
+        self.id = hashlib.sha256(id_str.encode()).hexdigest()  # Hash que identifica al id del producto
 
     def __str__(self):
         return "Pedido:" + json.dumps(self.__dict__(), sort_keys=True)

@@ -22,7 +22,7 @@ class Usuario():
     def __dict__(self):
         return {"nombre": self.nombre, "password": self.contraseña, "telefono": self.telefono, "salt":self.salt}
 
-    def encriptar(self, pedido):
+    def encriptar(self, pedido):  # funcion encargada de buscar el restaurante al que se esta pidiendo, para obtener su PK
         restaurante_pedido = pedido.restaurante
         restaurante = None
         if restaurante_pedido == "Restaurante1":
