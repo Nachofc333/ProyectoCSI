@@ -7,7 +7,7 @@ from controladores.controladorPedido import Controlador_pedido
 from almacen.jsonAlmacen import JsonAlmacen
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-
+from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 
 class Controlador_login(QtWidgets.QMainWindow):
     def __init__(self):
@@ -42,11 +42,12 @@ class Controlador_login(QtWidgets.QMainWindow):
 
         if match:
             salt = match["salt"]  # Se crea un salt al iniciar sesion para guardar una derivacion de la contraseña
-            kdf = PBKDF2HMAC(
-                algorithm=hashes.SHA256(),
+            kdf = Scrypt(
+                salt=salt.encode("latin-1"),
                 length=32,
-                salt=salt.encode('latin-1'),
-                iterations=480000,
+                n=2 ** 14,
+                r=8,
+                p=1,
             )
             try:
                 kdf.verify(password.encode('latin-1'), match["password"].encode('latin-1'))

@@ -7,6 +7,7 @@ import re
 import os
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 
 
 class Controlador_regristro(QtWidgets.QMainWindow):
@@ -55,11 +56,12 @@ class Controlador_regristro(QtWidgets.QMainWindow):
     def derivarContraseña(self, password):
         salt = os.urandom(16)
         # derive
-        kdf = PBKDF2HMAC(
-            algorithm=hashes.SHA256(),
-            length=32,
+        kdf = Scrypt(
             salt=salt,
-            iterations=480000,
+            length=32,
+            n=2 ** 14,
+            r=8,
+            p=1,
         )
         key = kdf.derive(bytes(password, "utf-8"))
         return key, salt
