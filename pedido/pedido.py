@@ -1,5 +1,8 @@
 import hashlib
 import json
+from datetime import datetime
+
+
 class Pedido():
     def __init__(self, restaurante, pasta, filete, lentejas, hamburguesa, tarta, brownie):
         self.restaurante = restaurante
@@ -9,14 +12,17 @@ class Pedido():
         self.hamburguesa = hamburguesa
         self.tarta = tarta
         self.brownie = brownie
+        self.fecha = datetime.utcnow().__str__()
         id_str = json.dumps(self.__dict__(), sort_keys=True)
         self.id = hashlib.sha256(id_str.encode()).hexdigest()
+
     def __str__(self):
         return "Pedido:" + json.dumps(self.__dict__(), sort_keys=True)
 
     def __dict__(self):
         dict_ = {
             "restaurante": self.restaurante,
+            "fecha": self.fecha,
 
         }
         if self.pasta != 0:

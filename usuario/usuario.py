@@ -10,6 +10,7 @@ from cryptography.hazmat.primitives import hashes, hmac
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
+
 class Usuario():
     def __init__(self, nombre, contraseña, telefono, salt):
         self.nombre = nombre

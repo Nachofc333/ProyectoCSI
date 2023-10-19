@@ -8,6 +8,7 @@ import os
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
+
 class Controlador_regristro(QtWidgets.QMainWindow):
 
     def __init__(self):
@@ -37,7 +38,6 @@ class Controlador_regristro(QtWidgets.QMainWindow):
             self.validarContraseña(nombre)
         else:
             alerta = QMessageBox.information(self, 'Error', 'El usuario ya existe', QMessageBox.Ok)
-
 
     def validarContraseña(self, nombre):
         contraseña = self.ui.txt_password.text()

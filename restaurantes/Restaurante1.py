@@ -2,6 +2,8 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 from restaurantes.restauranteMaster import RestauranteMaster
 import os
+
+
 class Restaurante1(RestauranteMaster):
     def __init__(self):
         super(RestauranteMaster, self).__init__()

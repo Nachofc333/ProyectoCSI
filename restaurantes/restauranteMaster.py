@@ -6,6 +6,8 @@ import os
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.hazmat.primitives import hashes, hmac
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+
+
 class RestauranteMaster(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -22,6 +24,7 @@ class RestauranteMaster(QtWidgets.QMainWindow):
                 algorithm=hashes.SHA256(),
                 label=None))
         self._key = key
+
     def descifrarPedido(self,ct, signature):
         h = hmac.HMAC(self._key, hashes.SHA256())
         h.update(ct)

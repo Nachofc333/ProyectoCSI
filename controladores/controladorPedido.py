@@ -14,6 +14,7 @@ class Controlador_pedido(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.InicializarGui()
         self.almacen = JsonAlmacenPedidos()
+
     def InicializarGui(self):
         self.ui.EnviarPedido.clicked.connect(self.ComprobarRestaurante)
 

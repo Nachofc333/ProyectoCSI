@@ -7,20 +7,23 @@ from controladores.controladorPedido import Controlador_pedido
 from almacen.jsonAlmacen import JsonAlmacen
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+
+
 class Controlador_login(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
-
-        self.ui=Ui_login()
+        self.ui = Ui_login()  # Pantalla de inicio de sesion
         self.ui.setupUi(self)
         self.controlador_registro = Controlador_regristro()
         self.controlador_pedido = None
         self.InicializarGui()
         self.almacen = JsonAlmacen()
+
     def InicializarGui(self):
-        self.ui.btnIniciarSesion.clicked.connect(self.validarCredenciales)
-        self.ui.btnRegistrar.clicked.connect(self.registrarUsuario)
-    def validarCredenciales(self):
+        self.ui.btnIniciarSesion.clicked.connect(self.validarCredenciales)  # Valida las credenciales si se ha dado a iniciar sesion
+        self.ui.btnRegistrar.clicked.connect(self.registrarUsuario)  # Pasa a registrar usuario si se ha dado click a registrar usuario
+
+    def validarCredenciales(self):  # Esta función comprueba que el usuario ya esta registrado en la base de datos
         usuario = self.ui.txt_user.text()
         password = self.ui.txt_password.text()
         if not usuario or not password:
