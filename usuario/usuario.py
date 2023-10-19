@@ -35,26 +35,26 @@ class Usuario():
             restaurante = Restaurante4()
         else:
             print("error")
-        self.encriptarKEY(restaurante, self._key)
-        ct = self.encriptarPedido(pedido, restaurante, self._key, restaurante.iv)
+        self.encriptarKEY(restaurante, self._key)  # llamada a encriptarKey, que encriptará la key con la PK del restaurante
+        ct = self.encriptarPedido(pedido, restaurante, self._key, restaurante.iv)  # pedido encriptado simetricamente
         if ct:
             return ct
         return False
 
-    def encriptarPedido(self, pedido, restaurante, key, iv):
+    def encriptarPedido(self, pedido, restaurante, key, iv):  # funcion encargada de encriptar el pedido de forma simetrica
         cipher = Cipher(algorithms.AES(key), modes.CBC(iv))
         encryptor = cipher.encryptor()
         padder = padding.PKCS7(128).padder()
         padded_data = padder.update(str(pedido).encode("latin-1")) + padder.finalize()
         ct = encryptor.update(padded_data) + encryptor.finalize()
-        h = hmac.HMAC(self._key, hashes.SHA256())
+        h = hmac.HMAC(self._key, hashes.SHA256())  # autenticacion de mensaje
         h.update(ct)
         signature = h.finalize()
-        if restaurante.descifrarPedido(ct, signature):
+        if restaurante.descifrarPedido(ct, signature):  # el restaurante descifrara el pedido con la key descifrada
             return ct
         return False
 
-    def encriptarKEY(self, restaurante, key):
+    def encriptarKEY(self, restaurante, key):  # funcion encargada de encriptar la key simetrica con la pk del restaurante al que se le realizo el pedido
         pk_restaurante = restaurante.public_key
         message = key
         cipherkey = pk_restaurante.encrypt(
@@ -63,4 +63,4 @@ class Usuario():
                 mgf=pd.MGF1(algorithm=hashes.SHA256()),
                 algorithm=hashes.SHA256(),
                 label=None))
-        restaurante.descifrarKEY(cipherkey)
+        restaurante.descifrarKEY(cipherkey)  # el restaurante descifrara la key con su clave privada

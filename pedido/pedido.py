@@ -12,14 +12,14 @@ class Pedido():
         self.hamburguesa = hamburguesa
         self.tarta = tarta
         self.brownie = brownie
-        self.fecha = datetime.utcnow().__str__()
+        self.fecha = datetime.utcnow().__str__()  # Fecha a la que se crea el pedido
         id_str = json.dumps(self.__dict__(), sort_keys=True)
         self.id = hashlib.sha256(id_str.encode()).hexdigest()  # Hash que identifica al id del producto
 
     def __str__(self):
-        return "Pedido:" + json.dumps(self.__dict__(), sort_keys=True)
+        return "Pedido:" + json.dumps(self.__dict__(), sort_keys=True)  # Se crea el str del pedido
 
-    def __dict__(self):
+    def __dict__(self):  # Dicionario del pedido, contiene los productos seleccionados, la fecha, el restaurante y el id
         dict_ = {
             "restaurante": self.restaurante,
             "fecha": self.fecha,

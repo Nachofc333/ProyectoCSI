@@ -16,7 +16,7 @@ class RestauranteMaster(QtWidgets.QMainWindow):
         self.iv = b""
         self._key = b""
 
-    def descifrarKEY(self, key):
+    def descifrarKEY(self, key):  # funcion encargada de descifrar la key simetrica con la clave privada del restaurante
         key = self._private_key.decrypt(
             key,
             padding.OAEP(
@@ -25,7 +25,7 @@ class RestauranteMaster(QtWidgets.QMainWindow):
                 label=None))
         self._key = key
 
-    def descifrarPedido(self,ct, signature):
+    def descifrarPedido(self,ct, signature):  #funcion encargada de descifrar el pedido con la key simetrica descifrada
         h = hmac.HMAC(self._key, hashes.SHA256())
         h.update(ct)
         try:
