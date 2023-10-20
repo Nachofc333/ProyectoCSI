@@ -50,7 +50,7 @@
      <rect>
       <x>50</x>
       <y>50</y>
-      <width>331</width>
+      <width>371</width>
       <height>71</height>
      </rect>
     </property>
@@ -64,7 +64,7 @@
    <widget class="QComboBox" name="SelectorRestaurante">
     <property name="geometry">
      <rect>
-      <x>450</x>
+      <x>490</x>
       <y>70</y>
       <width>261</width>
       <height>31</height>
@@ -100,7 +100,7 @@
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>130</y>
+      <y>90</y>
       <width>331</width>
       <height>71</height>
      </rect>
@@ -115,40 +115,20 @@
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>200</y>
+      <x>50</x>
+      <y>210</y>
       <width>371</width>
-      <height>231</height>
+      <height>141</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="4" column="0">
-      <widget class="QCheckBox" name="Tarta">
+     <item row="0" column="0">
+      <widget class="QCheckBox" name="Pasta">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Segoe UI&quot;;</string>
        </property>
        <property name="text">
-        <string>Tarta de queso</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QCheckBox" name="Filete">
-       <property name="styleSheet">
-        <string notr="true">font: 12pt &quot;Segoe UI&quot;;</string>
-       </property>
-       <property name="text">
-        <string>Filete de ternera</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QCheckBox" name="Hamburguesa">
-       <property name="styleSheet">
-        <string notr="true">font: 12pt &quot;Segoe UI&quot;;</string>
-       </property>
-       <property name="text">
-        <string>Hamburguesa traducional</string>
+        <string>Pasta a la carbonara</string>
        </property>
       </widget>
      </item>
@@ -162,13 +142,23 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QCheckBox" name="Pasta">
+     <item row="1" column="0">
+      <widget class="QCheckBox" name="Filete">
        <property name="styleSheet">
         <string notr="true">font: 12pt &quot;Segoe UI&quot;;</string>
        </property>
        <property name="text">
-        <string>Pasta a la carbonara</string>
+        <string>Filete de ternera</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QCheckBox" name="Hamburguesa">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Segoe UI&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Hamburguesa tradicional</string>
        </property>
       </widget>
      </item>
@@ -177,9 +167,9 @@
    <widget class="QPushButton" name="EnviarPedido">
     <property name="geometry">
      <rect>
-      <x>480</x>
-      <y>250</y>
-      <width>241</width>
+      <x>490</x>
+      <y>400</y>
+      <width>291</width>
       <height>131</height>
      </rect>
     </property>
@@ -193,6 +183,133 @@
      <string>Enviar pedido</string>
     </property>
    </widget>
+   <widget class="QWidget" name="gridLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>390</y>
+      <width>371</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <widget class="QCheckBox" name="Tarta">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Segoe UI&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Tarta de queso</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QCheckBox" name="Brownie">
+       <property name="styleSheet">
+        <string notr="true">font: 12pt &quot;Segoe UI&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Brownie</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>170</y>
+      <width>91</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 15pt &quot;Segoe UI&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Platos:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>350</y>
+      <width>101</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 15pt &quot;Segoe UI&quot;;</string>
+    </property>
+    <property name="text">
+     <string>Postres:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>10</y>
+      <width>231</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">
+font: 20pt &quot;Wide Latin&quot;;</string>
+    </property>
+    <property name="text">
+     <string>GLOVO</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>801</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 20pt &quot;Segoe UI&quot;;
+background-color: rgb(42, 170, 255);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="Inicio">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(37, 179, 255);
+font: 700 10pt &quot;Segoe UI&quot;;</string>
+    </property>
+    <property name="text">
+     <string>INICIO</string>
+    </property>
+   </widget>
+   <zorder>label</zorder>
+   <zorder>label_7</zorder>
+   <zorder>label_2</zorder>
+   <zorder>SelectorRestaurante</zorder>
+   <zorder>label_3</zorder>
+   <zorder>gridLayoutWidget</zorder>
+   <zorder>EnviarPedido</zorder>
+   <zorder>gridLayoutWidget_2</zorder>
+   <zorder>label_4</zorder>
+   <zorder>label_5</zorder>
+   <zorder>label_6</zorder>
+   <zorder>Inicio</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

@@ -1,4 +1,4 @@
-from interfaces.PedidoW2 import Ui_Pedido
+from interfaces.PedidoW import Ui_Pedido
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from pedido.pedido import Pedido
