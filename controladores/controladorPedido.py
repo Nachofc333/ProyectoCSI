@@ -55,16 +55,18 @@ class Controlador_pedido(QtWidgets.QMainWindow):
             pedido_cifrado = PedidoCifrado(ct, key)
             if restaurante == "Restaurante1":
                 self.almacen1.add_item(pedido_cifrado)
+
             elif restaurante == "Restaurante2":
                 self.almacen2.add_item(pedido_cifrado)
             elif restaurante == "Restaurante3":
                 self.almacen3.add_item(pedido_cifrado)
             elif restaurante == "Restaurante4":
                 self.almacen4.add_item(pedido_cifrado)
+
             self.terminar()
 
     def terminar(self):
-        alerta =  QMessageBox.information(self, 'Exito', 'Pedido realizado con éxito', QMessageBox.Ok)
+        alerta = QMessageBox.information(self, 'Exito', 'Pedido realizado con éxito', QMessageBox.Ok)
         self.close()
 
 

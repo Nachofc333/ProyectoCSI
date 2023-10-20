@@ -16,10 +16,21 @@ class Usuario():
         self.telefono = telefono
         self.salt = salt.decode('latin-1')
         self._key = os.urandom(32)
+        self.iv = os.urandom(16)
         self.cipherkey = ""
 
     def __dict__(self):
         return {"nombre": self.nombre, "password": self.contraseña, "telefono": self.telefono, "salt":self.salt}
+
+    def encriptariv(self, restaurante):
+        pk_restaurante = restaurante.public_key
+        self.ivencrip = pk_restaurante.encrypt(
+            self.iv,
+            pd.OAEP(
+                mgf=pd.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None))
+        return self.ivencrip
 
     def encriptar(self, pedido):  # funcion encargada de buscar el restaurante al que se esta pidiendo, para obtener su PK
         restaurante_pedido = pedido.restaurante
@@ -35,7 +46,7 @@ class Usuario():
         else:
             print("error")
         self.encriptarKEY(restaurante, self._key)  # llamada a encriptarKey, que encriptará la key con la PK del restaurante
-        ct = self.encriptarPedido(pedido, restaurante, self._key, restaurante.iv)  # pedido encriptado simetricamente
+        ct = self.encriptarPedido(pedido, restaurante, self._key, self.iv)  # pedido encriptado simetricamente
         if ct:
             return ct
         return False
@@ -61,7 +72,8 @@ class Usuario():
         cipher_signature = Cipher(algorithms.AES(key), modes.CBC(iv))
         encryptor_signature = cipher_signature.encryptor()
         cs = encryptor_signature.update(padded_signature) + encryptor_signature.finalize()
-        if restaurante.descifrarPedido(ct, cs):  # el restaurante descifrara el pedido con la key descifrada
+        ivencrip = self.encriptariv(restaurante)
+        if restaurante.descifrarPedido(ct, cs, ivencrip):  # el restaurante descifrara el pedido con la key descifrada
             return ct, self.cipherkey
         return False
 

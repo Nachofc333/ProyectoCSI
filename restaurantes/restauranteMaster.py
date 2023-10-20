@@ -20,7 +20,6 @@ class RestauranteMaster(QtWidgets.QMainWindow):
         self.iv = b""
         self._key = b""
 
-
     def descifrarKEY(self, key):  # funcion encargada de descifrar la key simetrica con la clave privada del restaurante
         key = self._private_key.decrypt(
             key,
@@ -30,8 +29,17 @@ class RestauranteMaster(QtWidgets.QMainWindow):
                 label=None))
         self._key = key
 
-    def descifrarPedido(self,ct, cs):  #funcion encargada de descifrar el pedido con la key simetrica descifrada
+    def descifrarPedido(self,ct, cs, ivencrip):  #funcion encargada de descifrar el pedido con la key simetrica descifrada
+        iv = self._private_key.decrypt(
+            ivencrip,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None))
+        self.iv = iv
+
         cipher = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
+
         decryptor = cipher.decryptor()
         plaintext = decryptor.update(ct) + decryptor.finalize()
 
@@ -48,10 +56,10 @@ class RestauranteMaster(QtWidgets.QMainWindow):
             h.verify(signature)
             alerta = QMessageBox.information(self, 'Pedido', plaintextf, QMessageBox.Ok)
             return True
-        except Exception as e:
-            print(e)
+        except:
             alerta = QMessageBox.information(self, 'Error', "Pedido modificado", QMessageBox.Ok)
             return False
+
     def genererkey(self):
         if not os.path.exists(self._FILE_NAME):
             # Si no existe, genera la clave privada
@@ -75,3 +83,6 @@ class RestauranteMaster(QtWidgets.QMainWindow):
                 password=None,
             )
         return private_key
+
+    def almacenarPedido(self):
+        pass

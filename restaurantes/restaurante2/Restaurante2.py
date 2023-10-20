@@ -9,5 +9,5 @@ class Restaurante2(RestauranteMaster):
         super(RestauranteMaster, self).__init__()
         self._private_key =self.genererkey()
         self.public_key = self._private_key.public_key()
-        self.iv = os.urandom(16)
+        self.iv = ""
         self._key = ""
