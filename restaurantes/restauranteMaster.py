@@ -84,5 +84,6 @@ class RestauranteMaster(QtWidgets.QMainWindow):
             )
         return private_key
 
-    def almacenarPedido(self):
-        pass
+    def desencriptarPedidos(self, pedidocifrado):
+        self.descifrarKEY(pedidocifrado["Cipher_key"])
+        return self.descifrarPedido(pedidocifrado["Pedido"], pedidocifrado["Cipher_Signature"], pedidocifrado["Cipher_IV"])

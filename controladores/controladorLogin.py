@@ -19,6 +19,7 @@ class Controlador_login(QtWidgets.QMainWindow):
         self.ui = Ui_login()  # Pantalla de inicio de sesion
         self.ui.setupUi(self)
         self.controlador_registro = Controlador_regristro()
+
         self.controlador_pedido = None
         self.InicializarGui()
         self.almacen = JsonAlmacen()

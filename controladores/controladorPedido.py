@@ -7,6 +7,7 @@ from restaurantes.restaurante1.jsonAlmacenPedidos1 import JsonAlmacenPedidos1
 from restaurantes.restaurante2.jsonAlmacenPedidos2 import JsonAlmacenPedidos2
 from restaurantes.restaurante3.jsonAlmacenPedidos3 import JsonAlmacenPedidos3
 from restaurantes.restaurante4.jsonAlmacenPedidos4 import JsonAlmacenPedidos4
+from controladores.controladorRestaurantes import Controlador_restaurante
 
 
 class Controlador_pedido(QtWidgets.QMainWindow):
@@ -16,6 +17,7 @@ class Controlador_pedido(QtWidgets.QMainWindow):
         self.ui=Ui_Pedido()
         self.ui.setupUi(self)
         self.InicializarGui()
+        self.controlador_restaurantes = Controlador_restaurante()
         self.almacen1 = JsonAlmacenPedidos1()
         self.almacen2 = JsonAlmacenPedidos2()
         self.almacen3 = JsonAlmacenPedidos3()
@@ -23,6 +25,11 @@ class Controlador_pedido(QtWidgets.QMainWindow):
 
     def InicializarGui(self):
         self.ui.EnviarPedido.clicked.connect(self.ComprobarRestaurante)
+        self.ui.Pedidos.clicked.connect(self.IniciarRestaurantes)
+
+    def IniciarRestaurantes(self):
+        self.controlador_restaurantes.show()
+        self.close()
 
     def ComprobarRestaurante(self):
         restaurante = self.ui.SelectorRestaurante.currentText()
@@ -50,12 +57,11 @@ class Controlador_pedido(QtWidgets.QMainWindow):
             hamburguesa = self.ui.Hamburguesa.checkState() -1 if self.ui.Hamburguesa.checkState() > 0 else 0,
             tarta = self.ui.Tarta.checkState() -1 if self.ui.Tarta.checkState() >0 else 0,
             brownie = self.ui.Brownie.checkState() -1 if self.ui.Brownie.checkState() else 0)
-        ct, key = self.user.encriptar(pedido)
+        ct, key, cs, iv = self.user.encriptar(pedido)
         if ct:
-            pedido_cifrado = PedidoCifrado(ct, key)
+            pedido_cifrado = PedidoCifrado(ct, key, cs, iv)
             if restaurante == "Restaurante1":
                 self.almacen1.add_item(pedido_cifrado)
-
             elif restaurante == "Restaurante2":
                 self.almacen2.add_item(pedido_cifrado)
             elif restaurante == "Restaurante3":

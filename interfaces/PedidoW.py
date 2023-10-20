@@ -101,11 +101,11 @@ class Ui_Pedido(object):
 "background-color: rgb(42, 170, 255);")
         self.label_7.setText("")
         self.label_7.setObjectName("label_7")
-        self.Inicio = QtWidgets.QPushButton(self.centralwidget)
-        self.Inicio.setGeometry(QtCore.QRect(10, 10, 91, 31))
-        self.Inicio.setStyleSheet("background-color: rgb(37, 179, 255);\n"
+        self.Pedidos = QtWidgets.QPushButton(self.centralwidget)
+        self.Pedidos.setGeometry(QtCore.QRect(10, 10, 91, 31))
+        self.Pedidos.setStyleSheet("background-color: rgb(37, 179, 255);\n"
 "font: 700 10pt \"Segoe UI\";")
-        self.Inicio.setObjectName("Inicio")
+        self.Pedidos.setObjectName("Pedidos")
         self.label.raise_()
         self.label_7.raise_()
         self.label_2.raise_()
@@ -117,7 +117,7 @@ class Ui_Pedido(object):
         self.label_4.raise_()
         self.label_5.raise_()
         self.label_6.raise_()
-        self.Inicio.raise_()
+        self.Pedidos.raise_()
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 22))
@@ -150,7 +150,7 @@ class Ui_Pedido(object):
         self.label_4.setText(_translate("MainWindow", "Platos:"))
         self.label_5.setText(_translate("MainWindow", "Postres:"))
         self.label_6.setText(_translate("MainWindow", "GLOVO"))
-        self.Inicio.setText(_translate("MainWindow", "INICIO"))
+        self.Pedidos.setText(_translate("MainWindow", "PEDIDOS"))
 
 
 if __name__ == "__main__":

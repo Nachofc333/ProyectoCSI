@@ -74,7 +74,7 @@ class Usuario():
         cs = encryptor_signature.update(padded_signature) + encryptor_signature.finalize()
         ivencrip = self.encriptariv(restaurante)
         if restaurante.descifrarPedido(ct, cs, ivencrip):  # el restaurante descifrara el pedido con la key descifrada
-            return ct, self.cipherkey
+            return ct, self.cipherkey, cs, ivencrip
         return False
 
     def encriptarKEY(self, restaurante, key):  # funcion encargada de encriptar la key simetrica con la pk del restaurante al que se le realizo el pedido

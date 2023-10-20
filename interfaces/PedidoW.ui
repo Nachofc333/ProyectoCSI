@@ -281,7 +281,7 @@ background-color: rgb(42, 170, 255);</string>
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="Inicio">
+   <widget class="QPushButton" name="Pedidos">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -295,7 +295,7 @@ background-color: rgb(42, 170, 255);</string>
 font: 700 10pt &quot;Segoe UI&quot;;</string>
     </property>
     <property name="text">
-     <string>INICIO</string>
+     <string>PEDIDOS</string>
     </property>
    </widget>
    <zorder>label</zorder>
@@ -309,7 +309,7 @@ font: 700 10pt &quot;Segoe UI&quot;;</string>
    <zorder>label_4</zorder>
    <zorder>label_5</zorder>
    <zorder>label_6</zorder>
-   <zorder>Inicio</zorder>
+   <zorder>Pedidos</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
