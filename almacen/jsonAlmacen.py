@@ -15,3 +15,11 @@ class JsonAlmacen(JsonStoreMaster):
     def find_name(self, data_to_find:str):
         self.load_store()
         return self.find_data(data_to_find)
+
+    def modify_user(self, nombre, contraseña, salt):
+        self.load_store()
+        for item in self._data_list:
+            if item[self._ID_FIELD] == nombre:
+                item['password'] = contraseña.decode('latin-1')
+                item['salt'] = salt.decode('latin-1')
+        self.save_store()

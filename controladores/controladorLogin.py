@@ -1,3 +1,5 @@
+import random
+
 from interfaces.InicioW import Ui_login
 from usuario.usuario import Usuario
 from PyQt5 import QtWidgets
@@ -8,6 +10,8 @@ from almacen.jsonAlmacen import JsonAlmacen
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
+import os
+import random
 
 class Controlador_login(QtWidgets.QMainWindow):
     def __init__(self):
@@ -51,10 +55,24 @@ class Controlador_login(QtWidgets.QMainWindow):
             )
             try:
                 kdf.verify(password.encode('latin-1'), match["password"].encode('latin-1'))
-                self.abrirVentanaPrincipal(match)
+                if random.random() < 0.33:
+                    self.actualizarSalt(usuario, password, match)
+                else:
+                    self.abrirVentanaPrincipal(match)
             except:
                 alerta = QMessageBox.information(self, 'Error', 'Contraseña incorrecta', QMessageBox.Ok)
-
+    def actualizarSalt(self, usuario, password, match):
+        salt = os.urandom(16)
+        kdf = Scrypt(
+            salt=salt,
+            length=32,
+            n=2 ** 14,
+            r=8,
+            p=1,
+        )
+        key = kdf.derive(bytes(password, "utf-8"))
+        self.almacen.modify_user(usuario, key, salt)
+        self.abrirVentanaPrincipal(match)
     def registrarUsuario(self):
         self.controlador_registro.show()
 

@@ -68,7 +68,7 @@ class Controlador_regristro(QtWidgets.QMainWindow):
             r=8,
             p=1,
         )
-        key = kdf.derive(bytes(password, "utf-8"))
+        key = kdf.derive(bytes(password, "latin-1"))
         return key, salt
     def crearUsuario(self, nombre, contraseña, salt):
         """
