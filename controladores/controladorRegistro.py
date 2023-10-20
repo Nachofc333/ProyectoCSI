@@ -36,12 +36,17 @@ class Controlador_regristro(QtWidgets.QMainWindow):
         ### buscar el usuatio en el almacen si no lo encuentra lo crea
         match =self.almacen.find_name(nombre)
         if not match:
-            self.validarContraseña(nombre)
+            self.contaseñaSegura(nombre)
         else:
             alerta = QMessageBox.information(self, 'Error', 'El usuario ya existe', QMessageBox.Ok)
 
-    def validarContraseña(self, nombre):
+    def contaseñaSegura(self, nombre):
         contraseña = self.ui.txt_password.text()
+        if re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", contraseña):
+            self.validarContraseña(nombre, contraseña)
+        else:
+            QMessageBox.information(self, 'Error', 'La contraseña debe incluir una mayúscula y una minúscula, un número y un carácter respecial. La longitud mínima es de 8 caracteres.', QMessageBox.Ok)
+    def validarContraseña(self, nombre, contraseña):
         comprobar = self.ui.txt_password_2.text()
         if not contraseña or not comprobar:
             QMessageBox.information(self, 'Error', 'Por favor, rellene todos los campos', QMessageBox.Ok)
