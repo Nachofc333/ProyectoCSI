@@ -55,7 +55,7 @@ class RestauranteMaster(QtWidgets.QMainWindow):
         try:
             h.verify(signature)
             alerta = QMessageBox.information(self, 'Pedido', plaintextf, QMessageBox.Ok)
-            return True
+            return plaintextf
         except:
             alerta = QMessageBox.information(self, 'Error', "Pedido modificado", QMessageBox.Ok)
             return False
