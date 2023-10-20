@@ -1,11 +1,9 @@
-from restaurantes.Restaurante1 import Restaurante1
-from restaurantes.Restaurante2 import Restaurante2
-from restaurantes.Restaurante3 import Restaurante3
-from restaurantes.Restaurante4 import Restaurante4
-from cryptography.hazmat.primitives import hashes
+from restaurantes.restaurante1.Restaurante1 import Restaurante1
+from restaurantes.restaurante2.Restaurante2 import Restaurante2
+from restaurantes.restaurante3.Restaurante3 import Restaurante3
+from restaurantes.restaurante4.Restaurante4 import Restaurante4
 from cryptography.hazmat.primitives.asymmetric import padding as pd
 import os
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.hazmat.primitives import hashes, hmac
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -18,6 +16,7 @@ class Usuario():
         self.telefono = telefono
         self.salt = salt.decode('latin-1')
         self._key = os.urandom(32)
+        self.cipherkey = ""
 
     def __dict__(self):
         return {"nombre": self.nombre, "password": self.contraseña, "telefono": self.telefono, "salt":self.salt}
@@ -63,16 +62,16 @@ class Usuario():
         encryptor_signature = cipher_signature.encryptor()
         cs = encryptor_signature.update(padded_signature) + encryptor_signature.finalize()
         if restaurante.descifrarPedido(ct, cs):  # el restaurante descifrara el pedido con la key descifrada
-            return ct
+            return ct, self.cipherkey
         return False
 
     def encriptarKEY(self, restaurante, key):  # funcion encargada de encriptar la key simetrica con la pk del restaurante al que se le realizo el pedido
         pk_restaurante = restaurante.public_key
         message = key
-        cipherkey = pk_restaurante.encrypt(
+        self.cipherkey = pk_restaurante.encrypt(
             message,
             pd.OAEP(
                 mgf=pd.MGF1(algorithm=hashes.SHA256()),
                 algorithm=hashes.SHA256(),
                 label=None))
-        restaurante.descifrarKEY(cipherkey)  # el restaurante descifrara la key con su clave privada
+        restaurante.descifrarKEY(self.cipherkey)  # el restaurante descifrara la key con su clave privada

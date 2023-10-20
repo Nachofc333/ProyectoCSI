@@ -6,15 +6,20 @@ import os
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.hazmat.primitives import hashes, hmac
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives import serialization
+import os
 
 class RestauranteMaster(QtWidgets.QMainWindow):
+    _KEY = ""
+    _FILE_NAME = ""
     def __init__(self):
         super().__init__()
         self._private_key = ""
         self.public_key = ""
         self.iv = b""
         self._key = b""
+
 
     def descifrarKEY(self, key):  # funcion encargada de descifrar la key simetrica con la clave privada del restaurante
         key = self._private_key.decrypt(
@@ -47,3 +52,26 @@ class RestauranteMaster(QtWidgets.QMainWindow):
             print(e)
             alerta = QMessageBox.information(self, 'Error', "Pedido modificado", QMessageBox.Ok)
             return False
+    def genererkey(self):
+        if not os.path.exists(self._FILE_NAME):
+            # Si no existe, genera la clave privada
+            private_key = rsa.generate_private_key(
+                public_exponent=65537,
+                key_size=2048,
+            )
+
+            # Guarda la clave privada en un archivo PEM
+            with open(self._FILE_NAME, "wb") as f:
+                f.write(private_key.private_bytes(
+                    encoding=serialization.Encoding.PEM,
+                    format=serialization.PrivateFormat.TraditionalOpenSSL,
+                    encryption_algorithm=serialization.NoEncryption()
+                ))
+
+        # Lee la clave privada desde un archivo PEM
+        with open(self._FILE_NAME, "rb") as f:
+            private_key = serialization.load_pem_private_key(
+                f.read(),
+                password=None,
+            )
+        return private_key
