@@ -56,13 +56,13 @@ class Controlador_login(QtWidgets.QMainWindow):
             )
             try:
                 kdf.verify(password.encode('latin-1'), match["password"].encode('latin-1'))
-                if random.random() < 0.33:
-                    self.actualizarSalt(usuario, password, match)
-                else:
-                    self.abrirVentanaPrincipal(match)
+
+                self.actualizarSalt(usuario, password, match)
+
             except:
                 alerta = QMessageBox.information(self, 'Error', 'Contraseña incorrecta', QMessageBox.Ok)
-    def actualizarSalt(self, usuario, password, match):
+
+    def actualizarSalt(self, usuario, password, match):  # Se actualiza el salt cada vez que el usuario accede a la app para mayor seguridad
         salt = os.urandom(16)
         kdf = Scrypt(
             salt=salt,
@@ -74,6 +74,7 @@ class Controlador_login(QtWidgets.QMainWindow):
         key = kdf.derive(bytes(password, "utf-8"))
         self.almacen.modify_user(usuario, key, salt)
         self.abrirVentanaPrincipal(match)
+
     def registrarUsuario(self):
         self.controlador_registro.show()
 

@@ -17,7 +17,7 @@ class Pedido():
         self.id = hashlib.sha256(id_str.encode()).hexdigest()  # Hash que identifica al id del producto
 
     def __str__(self):
-        return "Pedido:" + json.dumps(self.__dict__(), sort_keys=True)  # Se crea el str del pedido
+        return json.dumps(self.__dict__(), sort_keys=True)  # Se crea el str del pedido
 
     def __dict__(self):  # Dicionario del pedido, contiene los productos seleccionados, la fecha, el restaurante y el id
         dict_ = {

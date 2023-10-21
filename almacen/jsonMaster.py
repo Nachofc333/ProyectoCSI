@@ -2,6 +2,7 @@
 import json
 from excepciones.excepcion import Excepcion
 
+
 class JsonStoreMaster():
     """Class Store"""
     _FILE_PATH = ""
@@ -22,6 +23,7 @@ class JsonStoreMaster():
             self._data_list = []
         except json.JSONDecodeError as ex:
             raise Excepcion("JSON Decode Error - Wrong JSON Format") from ex
+
     def save_store(self)->None:
         """Guardar"""
         try:
@@ -41,5 +43,9 @@ class JsonStoreMaster():
     def add_item(self, item:any)->None:
         """Añadir producto"""
         self.load_store()
-        self._data_list.append(item.__dict__())
+        if isinstance(item, str):
+            itemdict = json.loads(item)
+            self._data_list.append(itemdict)
+        else:
+            self._data_list.append(item.__dict__())
         self.save_store()

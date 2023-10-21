@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from interfaces.RestauranteW import Ui_Restaurante
 
+
 class Controlador_restaurante(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -12,3 +13,5 @@ class Controlador_restaurante(QtWidgets.QMainWindow):
     def InicializarGui(self):
         print("Hecho")
 
+    def MostrarPedidos(self):
+        pass

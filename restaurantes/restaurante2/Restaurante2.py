@@ -1,6 +1,7 @@
 
 from cryptography.hazmat.primitives.asymmetric import rsa
 from restaurantes.restauranteMaster import RestauranteMaster
+from restaurantes.restaurante2 import jsonAlmacenPedidoDesencriptado2
 import os
 JSON_FILES_PATH = os.path.dirname(__file__)
 class Restaurante2(RestauranteMaster):

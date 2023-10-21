@@ -29,7 +29,7 @@ class RestauranteMaster(QtWidgets.QMainWindow):
                 label=None))
         self._key = key
 
-    def descifrarPedido(self,ct, cs, ivencrip):  #funcion encargada de descifrar el pedido con la key simetrica descifrada
+    def descifrariv(self, ivencrip):
         iv = self._private_key.decrypt(
             ivencrip,
             padding.OAEP(
@@ -37,6 +37,9 @@ class RestauranteMaster(QtWidgets.QMainWindow):
                 algorithm=hashes.SHA256(),
                 label=None))
         self.iv = iv
+
+    def descifrarPedido(self,ct, cs, ivencrip):  #funcion encargada de descifrar el pedido con la key simetrica descifrada
+        self.descifrariv(ivencrip)
 
         cipher = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
 
@@ -85,5 +88,15 @@ class RestauranteMaster(QtWidgets.QMainWindow):
         return private_key
 
     def desencriptarPedidos(self, pedidocifrado):
-        self.descifrarKEY(pedidocifrado["Cipher_key"])
-        return self.descifrarPedido(pedidocifrado["Pedido"], pedidocifrado["Cipher_Signature"], pedidocifrado["Cipher_IV"])
+        self.descifrarKEY(pedidocifrado.key.encode("latin-1"))  # key descifrada
+
+        self.descifrariv(pedidocifrado.iv.encode("latin-1"))  # iv descifrado
+
+        cipher = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
+        decryptor = cipher.decryptor()
+        plaintext = decryptor.update(pedidocifrado.pedido.encode("latin-1")) + decryptor.finalize()  # pedido descifrado
+
+        # Quitar el padding
+        plaintextf = plaintext.rstrip(plaintext[-1:]).decode('latin-1')
+        return plaintextf
+
