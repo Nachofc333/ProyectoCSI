@@ -49,3 +49,7 @@ class JsonStoreMaster():
         else:
             self._data_list.append(item.__dict__())
         self.save_store()
+
+    def data(self):
+        self.load_store()
+        return self._data_list

@@ -76,24 +76,23 @@ class Controlador_pedido(QtWidgets.QMainWindow):
             if restaurante == "Restaurante1":
                 restaurante = Restaurante1()
                 self.almacen1.add_item(pedido_cifrado)
-                pedido_descifrado = restaurante.desencriptarPedidos(pedido_cifrado)
-                self.almacen1des.add_item(pedido_descifrado)
+                """pedido_descifrado = restaurante.desencriptarPedidos(pedido_cifrado)
+                self.almacen1des.add_item(pedido_descifrado)"""
             elif restaurante == "Restaurante2":
                 restaurante = Restaurante2()
                 self.almacen2.add_item(pedido_cifrado)
-                pedido_descifrado = restaurante.desencriptarPedidos(pedido_cifrado)
-                self.almacen2des.add_item(pedido_descifrado)
+                """pedido_descifrado = restaurante.desencriptarPedidos(pedido_cifrado)
+                self.almacen2des.add_item(pedido_descifrado)"""
             elif restaurante == "Restaurante3":
                 restaurante = Restaurante3()
                 self.almacen3.add_item(pedido_cifrado)
-                pedido_descifrado = restaurante.desencriptarPedidos(pedido_cifrado)
-                self.almacen3des.add_item(pedido_descifrado)
+                """pedido_descifrado = restaurante.desencriptarPedidos(pedido_cifrado)
+                self.almacen3des.add_item(pedido_descifrado)"""
             elif restaurante == "Restaurante4":
                 restaurante = Restaurante4()
                 self.almacen4.add_item(pedido_cifrado)
-                pedido_descifrado = restaurante.desencriptarPedidos(pedido_cifrado)
-                self.almacen4des.add_item(pedido_descifrado)
-
+                """pedido_descifrado = restaurante.desencriptarPedidos(pedido_cifrado)
+                self.almacen4des.add_item(pedido_descifrado)"""
             self.terminar()
 
     def terminar(self):

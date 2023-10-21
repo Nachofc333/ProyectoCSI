@@ -11,3 +11,5 @@ class JsonAlmacenPedidoDesencriptado2(JsonStoreMaster):
     def __init__(self)->None:
         """Constructor de JsonDeliverStore"""
         super(JsonStoreMaster, self).__init__()
+        if os.path.isfile(self._FILE_PATH):
+            os.remove(self._FILE_PATH)
