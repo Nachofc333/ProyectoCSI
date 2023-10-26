@@ -13,6 +13,7 @@ import os
 class RestauranteMaster(QtWidgets.QMainWindow):
     _KEY = ""
     _FILE_NAME = ""
+
     def __init__(self):
         super().__init__()
         self._private_key = ""
@@ -29,7 +30,7 @@ class RestauranteMaster(QtWidgets.QMainWindow):
                 label=None))
         self._key = key
 
-    def descifrariv(self, ivencrip):
+    def descifrariv(self, ivencrip):  # funcion encargada de descifrar el iv de la comunicación simétrica con la clave privada del restaurante
         iv = self._private_key.decrypt(
             ivencrip,
             padding.OAEP(
@@ -38,7 +39,7 @@ class RestauranteMaster(QtWidgets.QMainWindow):
                 label=None))
         self.iv = iv
 
-    def descifrarPedido(self,ct, cs, ivencrip):  #funcion encargada de descifrar el pedido con la key simetrica descifrada
+    def descifrarPedido(self,ct, cs, ivencrip):  # funcion encargada de descifrar el pedido con la key simetrica descifrada
         self.descifrariv(ivencrip)
 
         cipher = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
@@ -87,16 +88,29 @@ class RestauranteMaster(QtWidgets.QMainWindow):
             )
         return private_key
 
-    def desencriptarPedidos(self, pedidocifrado):
+    def desencriptarPedidos(self, pedidocifrado):  # Desencripta el almacén de pedidos encriptados de cada restaurante
         self.descifrarKEY(pedidocifrado.key.encode("latin-1"))  # key descifrada
 
         self.descifrariv(pedidocifrado.iv.encode("latin-1"))  # iv descifrado
+
+        # Desencripta la signature de forma simetrica para verificar que el pedido no se ha modificado
+        cipher_signature = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
+        decryptor_signature = cipher_signature.decryptor()
+        signature = decryptor_signature.update(pedidocifrado.signature.encode("latin-1")) + decryptor_signature.finalize()
 
         cipher = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
         decryptor = cipher.decryptor()
         plaintext = decryptor.update(pedidocifrado.pedido.encode("latin-1")) + decryptor.finalize()  # pedido descifrado
 
-        # Quitar el padding
+        # Quitar el padding del pedido
         plaintextf = plaintext.rstrip(plaintext[-1:]).decode('latin-1')
-        return plaintextf
+
+        h = hmac.HMAC(self._key, hashes.SHA256())
+        h.update(plaintextf.encode("latin-1"))
+        try:
+            h.verify(signature)  # verifica la firma
+            return plaintextf
+        except:
+            alerta = QMessageBox.information(self, 'Error', "Pedido modificado", QMessageBox.Ok)
+            return False
 
