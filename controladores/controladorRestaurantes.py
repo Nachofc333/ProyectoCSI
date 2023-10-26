@@ -53,6 +53,11 @@ class Controlador_restaurante(QtWidgets.QMainWindow):
 
     def mostrarPedidos(self):
         data = self.almacencifrado.data()
+
+        if data == []:
+            QMessageBox.information(self, 'Error', 'Este restaurante no tiene pedidos registrados',
+                                    QMessageBox.Ok)
+            return
         for item in data:
             pedidocifrado = PedidoCifrado(
                 pedido = item["Pedido"].encode("latin-1"),
