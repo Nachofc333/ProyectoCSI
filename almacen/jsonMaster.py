@@ -19,7 +19,6 @@ class JsonStoreMaster():
             with open(self._FILE_PATH, "r", encoding="utf-8", newline="") as file:
                 self._data_list = json.load(file)
         except FileNotFoundError:
-            # file is not found , so  init my data_list
             self._data_list = []
         except json.JSONDecodeError as ex:
             raise Excepcion("JSON Decode Error - Wrong JSON Format") from ex

@@ -1,5 +1,3 @@
-import random
-
 from interfaces.InicioW import Ui_login
 from usuario.usuario import Usuario
 from PyQt5 import QtWidgets
@@ -7,11 +5,8 @@ from PyQt5.QtWidgets import QMessageBox
 from controladores.controladorRegistro import Controlador_regristro
 from controladores.controladorPedido import Controlador_pedido
 from almacen.jsonAlmacen import JsonAlmacen
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 import os
-import random
 
 class Controlador_login(QtWidgets.QMainWindow):
     def __init__(self):
@@ -31,7 +26,7 @@ class Controlador_login(QtWidgets.QMainWindow):
     def validarCredenciales(self):  # Esta función comprueba que el usuario ya esta registrado en la base de datos
         usuario = self.ui.txt_user.text()
         password = self.ui.txt_password.text()
-        if not usuario or not password:
+        if not usuario or not password:     # No se ha rellenado algún campo
             QMessageBox.information(self, 'Error', 'Por favor, complete los campos', QMessageBox.Ok)
             return
         match = self.almacen.find_name(usuario)  # Busca al usuario en la baswe de datos
@@ -46,8 +41,8 @@ class Controlador_login(QtWidgets.QMainWindow):
 
 
         if match:
-            salt = match["salt"]  # Se crea un salt al iniciar sesion para guardar una derivacion de la contraseña
-            kdf = Scrypt(
+            salt = match["salt"]        # Se crea un salt al iniciar sesion para guardar una derivacion de la contraseña
+            kdf = Scrypt(               # Se crea el mismo derivador que el usado para uniciar sesión
                 salt=salt.encode("latin-1"),
                 length=32,
                 n=2 ** 14,
@@ -55,8 +50,7 @@ class Controlador_login(QtWidgets.QMainWindow):
                 p=1,
             )
             try:
-                kdf.verify(password.encode('latin-1'), match["password"].encode('latin-1'))
-
+                kdf.verify(password.encode('latin-1'), match["password"].encode('latin-1'))     #Compreba que sean iguales
                 self.actualizarSalt(usuario, password, match)
 
             except:
@@ -72,7 +66,7 @@ class Controlador_login(QtWidgets.QMainWindow):
             p=1,
         )
         key = kdf.derive(bytes(password, "utf-8"))
-        self.almacen.modify_user(usuario, key, salt)
+        self.almacen.modify_user(usuario, key, salt)    # Modificar los datos en el almacén
         self.abrirVentanaPrincipal(match)
 
     def registrarUsuario(self):

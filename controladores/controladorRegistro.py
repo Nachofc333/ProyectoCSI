@@ -5,8 +5,6 @@ from almacen.jsonAlmacen import JsonAlmacen
 from usuario.usuario import Usuario
 import re
 import os
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 
 
@@ -24,17 +22,13 @@ class Controlador_regristro(QtWidgets.QMainWindow):
         self.ui.btnRegistrar.clicked.connect(self.validarUsuario)
 
     def validarUsuario(self):
-        """
-        Tenemos que hacer que se  compruebe q el usuario no esta en la base de datos
-        """
         nombre = self.ui.txt_user.text()
 
         if not nombre:
             QMessageBox.information(self, 'Error', 'Por favor, introduce tu nombre de usuario', QMessageBox.Ok)
             return
 
-        ### buscar el usuatio en el almacen si no lo encuentra lo crea
-        match =self.almacen.find_name(nombre)
+        match =self.almacen.find_name(nombre)   # buscar el usuatio en el almacen si no lo encuentra lo crea
         if not match:
             self.contaseñaSegura(nombre)
         else:
@@ -60,25 +54,20 @@ class Controlador_regristro(QtWidgets.QMainWindow):
 
     def derivarContraseña(self, password):
         salt = os.urandom(16)
-        # derive
-        kdf = Scrypt(
+        kdf = Scrypt(                                   # Algoritmo usado Scrypt
             salt=salt,
             length=32,
-            n=2 ** 14,
-            r=8,
-            p=1,
+            n=2 ** 14,                                  # Coste de la CPU
+            r=8,                                        # Tamaño de bloque
+            p=1,                                        # Paralelización
         )
-        key = kdf.derive(bytes(password, "latin-1"))
+        key = kdf.derive(bytes(password, "latin-1"))    # Deriva la contraseña
         return key, salt
     def crearUsuario(self, nombre, contraseña, salt):
-        """
-        Tenemos q hacer q cree el usuario y se guarde en la base de datos
-        """
         telefono = self.ui.txt_telefono.text()
         if not re.match(r'^\+?1?\d{9,15}$', telefono):
             QMessageBox.information(self, 'Error', 'Por favor, introduce un número de teléfono válido', QMessageBox.Ok)
             return
-
         usuario = Usuario(nombre, contraseña, telefono, salt)
         self.almacen.add_item(usuario)
         self.almacen.load_store()
