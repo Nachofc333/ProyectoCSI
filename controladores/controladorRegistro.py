@@ -36,7 +36,7 @@ class Controlador_regristro(QtWidgets.QMainWindow):
 
     def contaseñaSegura(self, nombre):
         contraseña = self.ui.txt_password.text()
-        if re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$", contraseña):
+        if re.match(r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.,()/¿¡+^<>ºª€#|=])[A-Za-z\d@$!%*?&.,()/¿¡+^<>ºª€#|=]{8,}$", contraseña):
             self.validarContraseña(nombre, contraseña)
         else:
             QMessageBox.information(self, 'Error', 'La contraseña debe incluir una mayúscula y una minúscula, un número y un carácter respecial. La longitud mínima es de 8 caracteres.', QMessageBox.Ok)
