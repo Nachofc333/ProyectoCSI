@@ -1,3 +1,5 @@
+Se ha realizado el proyecto en el intérprete de python 3.9
+
 Se debe instalar los paquetes mencionados en requirements.txt para poder ejecutar la aplicación.
     Esto se puede realizar escribiendo el siguiente comando en la terminal: pip install -r requirements.txt
     En caso de que no se instalen las librerias con el requirements, hay que instalar pyqt5 que es la librería que
