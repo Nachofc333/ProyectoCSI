@@ -39,7 +39,7 @@ class RestauranteMaster(QtWidgets.QMainWindow):
                 label=None))
         self.iv = iv
 
-    def descifrarPedido(self,ct, cs, ivencrip):  # funcion encargada de descifrar el pedido con la key simetrica descifrada
+    def descifrarPedido(self,ct, signature, ivencrip, pk_usuario):  # funcion encargada de descifrar el pedido con la key simetrica descifrada
         self.descifrariv(ivencrip)
 
         cipher = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
@@ -49,15 +49,22 @@ class RestauranteMaster(QtWidgets.QMainWindow):
 
         # Quitar el padding
         plaintextf = plaintext.rstrip(plaintext[-1:]).decode('latin-1')
-        # Crear un nuevo decryptor para la firma
-        cipher_signature = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
-        decryptor_signature = cipher_signature.decryptor()
-        signature = decryptor_signature.update(cs) + decryptor_signature.finalize()
 
         h = hmac.HMAC(self._key, hashes.SHA256())
         h.update(plaintextf.encode("latin-1"))
+        h.finalize()
+        print(h)
+        # Crear un nuevo decryptor para la firma
         try:
-            h.verify(signature)
+            pk_usuario.verify(
+                signature,
+                h,
+                padding.PSS(
+                    mgf=padding.MGF1(hashes.SHA256()),
+                    salt_length=padding.PSS.MAX_LENGTH
+                ),
+                hashes.SHA256()
+            )
             alerta = QMessageBox.information(self, 'Pedido', plaintextf, QMessageBox.Ok)
             return plaintextf
         except:

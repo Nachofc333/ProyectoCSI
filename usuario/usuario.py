@@ -7,8 +7,11 @@ import os
 from cryptography.hazmat.primitives import hashes, hmac
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives import hashes
 
-
+JSON_FILES_PATH = os.path.dirname(__file__)
 class Usuario():
     def __init__(self, nombre, contraseña, telefono, salt):
         self.nombre = nombre
@@ -18,6 +21,8 @@ class Usuario():
         self._key = os.urandom(32)
         self.iv = os.urandom(16)
         self.cipherkey = ""
+        self._key_rsa = ""
+        self.key_public = ""
 
     def __dict__(self):
         return {"nombre": self.nombre, "password": self.contraseña, "telefono": self.telefono, "salt":self.salt}
@@ -52,9 +57,11 @@ class Usuario():
         return False
 
     def encriptarPedido(self, pedido, restaurante, key, iv):  # funcion encargada de encriptar el pedido de forma simetrica
+        self._key_rsa = self.leerkey()
+        self.key_public = self._key_rsa.public_key()
         h = hmac.HMAC(self._key, hashes.SHA256())
         h.update(str(pedido).encode('latin-1'))
-        signature = h.finalize()
+        hash = h.finalize()
 
         cipher = Cipher(algorithms.AES(key), modes.CBC(iv))
         encryptor = cipher.encryptor()
@@ -63,18 +70,20 @@ class Usuario():
         padder_pedido = padding.PKCS7(128).padder()
         padded_data = padder_pedido.update(str(pedido).encode("latin-1")) + padder_pedido.finalize()
         ct = encryptor.update(padded_data) + encryptor.finalize()
+        print(hash)
+        # Firmar el hash
+        signature = self._key_rsa.sign(
+            hash,
+            pd.PSS(
+                mgf=pd.MGF1(hashes.SHA256()),
+                salt_length=pd.PSS.MAX_LENGTH
+            ),
+            hashes.SHA256()
+        )
 
-        # Crear un nuevo padder para la firma
-        padder_signature = padding.PKCS7(128).padder()
-        padded_signature = padder_signature.update(signature)
-
-        # Crear un nuevo encryptor para la firma
-        cipher_signature = Cipher(algorithms.AES(key), modes.CBC(iv))
-        encryptor_signature = cipher_signature.encryptor()
-        cs = encryptor_signature.update(padded_signature) + encryptor_signature.finalize()
         ivencrip = self.encriptariv(restaurante)
-        if restaurante.descifrarPedido(ct, cs, ivencrip):  # el restaurante descifrara el pedido con la key descifrada
-            return ct, self.cipherkey, cs, ivencrip
+        if restaurante.descifrarPedido(ct, signature, ivencrip, self.key_public):  # el restaurante descifrara el pedido con la key descifrada
+            return ct, self.cipherkey, signature, ivencrip
         return False
 
     def encriptarKEY(self, restaurante, key):  # funcion encargada de encriptar la key simetrica con la pk del restaurante al que se le realizo el pedido
@@ -87,3 +96,13 @@ class Usuario():
                 algorithm=hashes.SHA256(),
                 label=None))
         restaurante.descifrarKEY(self.cipherkey)  # el restaurante descifrara la key con su clave privada
+
+    def leerkey(self):
+        # Lee la clave privada desde un archivo PEM
+        path = JSON_FILES_PATH + "/../almacen/" + self.nombre + "/key.pem"
+        with open(path, "rb") as f:
+            private_key = serialization.load_pem_private_key(
+                f.read(),
+                password=None,
+            )
+        return private_key

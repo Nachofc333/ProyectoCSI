@@ -60,10 +60,7 @@ class Controlador_restaurante(QtWidgets.QMainWindow):
             return
         for item in data:
             pedidocifrado = PedidoCifrado(
-                pedido = item["Pedido"].encode("latin-1"),
-                key = item["Cipher_key"].encode("latin-1"),
-                signature = item["Cipher_Signature"].encode("latin-1"),
-                iv = item["Cipher_IV"].encode("latin-1"))
+                pedido = item["Pedido"].encode("latin-1"))
             pedido = self.restaurante.desencriptarPedidos(pedidocifrado)
             self.almacen.add_item(pedido)
         self.terminar()

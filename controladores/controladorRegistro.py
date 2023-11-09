@@ -6,8 +6,10 @@ from usuario.usuario import Usuario
 import re
 import os
 from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives import serialization
 
-
+JSON_FILES_PATH = os.path.dirname(__file__)
 class Controlador_regristro(QtWidgets.QMainWindow):
 
     def __init__(self):
@@ -70,6 +72,34 @@ class Controlador_regristro(QtWidgets.QMainWindow):
             QMessageBox.information(self, 'Error', 'Por favor, introduce un número de teléfono válido', QMessageBox.Ok)
             return
         usuario = Usuario(nombre, contraseña, telefono, salt)
+        path = JSON_FILES_PATH + "/../almacen/" + usuario.nombre
+        os.mkdir(path)
+        self.genererkey(path)
         self.almacen.add_item(usuario)
         self.almacen.load_store()
         self.close()
+
+    def genererkey(self, path):
+        path = path+"/key.pem"
+        if not os.path.exists(path):
+            # Si no existe, genera la clave privada
+            private_key = rsa.generate_private_key(
+                public_exponent=65537,
+                key_size=2048,
+            )
+
+            # Guarda la clave privada en un archivo PEM
+            with open(path, "wb") as f:
+                f.write(private_key.private_bytes(
+                    encoding=serialization.Encoding.PEM,
+                    format=serialization.PrivateFormat.TraditionalOpenSSL,
+                    encryption_algorithm=serialization.NoEncryption()
+                ))
+
+        # Lee la clave privada desde un archivo PEM
+        with open(path, "rb") as f:
+            private_key = serialization.load_pem_private_key(
+                f.read(),
+                password=None,
+            )
+        return private_key
