@@ -59,6 +59,7 @@ class Usuario():
     def encriptarPedido(self, pedido, restaurante, key, iv):  # funcion encargada de encriptar el pedido de forma simetrica
         self._key_rsa = self.leerkey()
         self.key_public = self._key_rsa.public_key()
+
         h = hmac.HMAC(self._key, hashes.SHA256())
         h.update(str(pedido).encode('latin-1'))
         hash = h.finalize()
@@ -70,7 +71,7 @@ class Usuario():
         padder_pedido = padding.PKCS7(128).padder()
         padded_data = padder_pedido.update(str(pedido).encode("latin-1")) + padder_pedido.finalize()
         ct = encryptor.update(padded_data) + encryptor.finalize()
-        print(hash)
+
         # Firmar el hash
         signature = self._key_rsa.sign(
             hash,

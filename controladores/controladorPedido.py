@@ -62,7 +62,8 @@ class Controlador_pedido(QtWidgets.QMainWindow):
             hamburguesa = self.ui.Hamburguesa.checkState() -1 if self.ui.Hamburguesa.checkState() > 0 else 0,
             tarta = self.ui.Tarta.checkState() -1 if self.ui.Tarta.checkState() >0 else 0,
             brownie = self.ui.Brownie.checkState() -1 if self.ui.Brownie.checkState() else 0)
-        ct= self.user.encriptar(pedido)
+        ct = self.user.encriptar(pedido)
+        print(ct)
         if ct:
             pedido_cifrado = PedidoCifrado(ct)
             if restaurante == "Restaurante1":

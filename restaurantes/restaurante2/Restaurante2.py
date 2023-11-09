@@ -1,5 +1,7 @@
 from restaurantes.restauranteMaster import RestauranteMaster
 import os
+from restaurantes.restaurante2.jsonAlmacenPedidos2 import JsonAlmacenPedidos2
+from restaurantes.restaurante2.jsonAlmacenPedidoDesencriptado2 import JsonAlmacenPedidoDesencriptado2
 JSON_FILES_PATH = os.path.dirname(__file__)
 
 
@@ -11,3 +13,5 @@ class Restaurante2(RestauranteMaster):
         self.public_key = self._private_key.public_key()
         self.iv = ""
         self._key = ""
+        self.almacen = JsonAlmacenPedidos2()
+        self.almacenDesencriptado = JsonAlmacenPedidoDesencriptado2()
