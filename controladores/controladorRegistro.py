@@ -103,3 +103,4 @@ class Controlador_regristro(QtWidgets.QMainWindow):
                 password=None,
             )
         return private_key
+

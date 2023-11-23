@@ -9,10 +9,16 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 import os
+from cryptography import x509
+from cryptography.x509.oid import NameOID
+from cryptography.hazmat.primitives import hashes
+from CA.CAMaster import CAMaster
+
 
 class RestauranteMaster(QtWidgets.QMainWindow):
     _KEY = ""
     _FILE_NAME = ""
+    _NAME = ""
 
     def __init__(self):
         super().__init__()
@@ -32,7 +38,7 @@ class RestauranteMaster(QtWidgets.QMainWindow):
                 label=None))
         self._key = key
 
-    def descifrariv(self, ivencrip):  # funcion encargada de descifrar el iv de la comunicación simétrica con la clave privada del restaurante
+    def descifrariv(self, ivencrip):  # funcion encargada de descifrar el iv de la comunicación simétrica con la clave privada del restauranteb
         iv = self._private_key.decrypt(
             ivencrip,
             padding.OAEP(
@@ -114,3 +120,14 @@ class RestauranteMaster(QtWidgets.QMainWindow):
                 algorithm=hashes.SHA256(),
                 label=None))
         return pedido
+
+    def requestCA(self):
+        # Generate a CSR
+        csr = x509.CertificateSigningRequestBuilder().subject_name(x509.Name([
+            # Provide various details about who we are.
+            x509.NameAttribute(NameOID.ORGANIZATION_NAME, self._NAME),
+        ])).sign(self._key_rsa, hashes.SHA256())
+        Autoridad = CAMaster()
+        Autoridad.crearCA(self.public_key, csr)
+
+

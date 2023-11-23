@@ -65,7 +65,7 @@ class Controlador_pedido(QtWidgets.QMainWindow):
         ct = self.user.encriptar(pedido)
         print(ct)
         if ct:
-            pedido_cifrado = PedidoCifrado(ct)
+            pedido_cifrado = PedidoCifrado(ct, 0)
             if restaurante == "Restaurante1":
                 restaurante = Restaurante1()
                 self.almacen1.add_item(pedido_cifrado)

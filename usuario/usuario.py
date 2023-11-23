@@ -10,8 +10,14 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives import hashes
+from cryptography import x509
+from cryptography.x509.oid import NameOID
+from cryptography.hazmat.primitives import hashes
+from CA.CAMaster import CAMaster
+
 
 JSON_FILES_PATH = os.path.dirname(__file__)
+
 class Usuario():
     def __init__(self, nombre, contraseña, telefono, salt):
         self.nombre = nombre
@@ -21,8 +27,8 @@ class Usuario():
         self._key = os.urandom(32)
         self.iv = os.urandom(16)
         self.cipherkey = ""
-        self._key_rsa = ""
-        self.key_public = ""
+        self._key_rsa = b""
+        self.key_public = b""
 
     def __dict__(self):
         return {"nombre": self.nombre, "password": self.contraseña, "telefono": self.telefono, "salt":self.salt}
@@ -107,3 +113,14 @@ class Usuario():
                 password=None,
             )
         return private_key
+
+    def requestCA(self):
+        # Generate a CSR
+        csr = x509.CertificateSigningRequestBuilder().subject_name(x509.Name([
+            # Provide various details about who we are.
+            x509.NameAttribute(NameOID.COMMON_NAME, self.nombre),
+        ])).sign(self._key_rsa, hashes.SHA256())
+        Autoridad = CAMaster()
+        Autoridad.crearCA(self.key_public, csr)
+
+

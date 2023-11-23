@@ -53,7 +53,7 @@ class Controlador_restaurante(QtWidgets.QMainWindow):
             return
         for item in data:
             pedidocifrado = PedidoCifrado(
-                pedido = item["Pedido"].encode("latin-1"))
+                pedido = item["Pedido"].encode("latin-1"), modo=0)
             pedido = self.restaurante.desencriptarPedidos(pedidocifrado)
             self.almacen.add_item(pedido)
         self.terminar()

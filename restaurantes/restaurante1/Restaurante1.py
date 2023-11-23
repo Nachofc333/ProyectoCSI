@@ -8,6 +8,8 @@ JSON_FILES_PATH = os.path.dirname(__file__)
 
 class Restaurante1(RestauranteMaster):
     _FILE_NAME = JSON_FILES_PATH + "/keyR1.pem"
+    _NAME = "RESTAURANTE1"
+
     def __init__(self):
         super(RestauranteMaster, self).__init__()
         self._private_key =self.genererkey()
