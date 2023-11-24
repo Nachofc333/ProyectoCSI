@@ -7,8 +7,7 @@ from CA.CARestaurante.CARestaurante import CARestaurante
 import sys
 
 def generarCA():
-
-    pass
+    car = CAR()
 
 
 if __name__ == '__main__':                      #  Iniciador del código
