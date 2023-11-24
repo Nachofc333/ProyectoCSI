@@ -80,6 +80,7 @@ class RestauranteMaster(QtWidgets.QMainWindow):
         return self.encriptarPedidoAlmacen(plaintextf)
 
     def encriptarPedidoAlmacen(self, plaintext):
+
         ct = self.public_key.encrypt(
             plaintext.encode("latin-1"),
             padding.OAEP(
@@ -113,13 +114,20 @@ class RestauranteMaster(QtWidgets.QMainWindow):
         return private_key
 
     def desencriptarPedidos(self, pedidocifrado):  # Desencripta el almacén de pedidos encriptados de cada restaurante
-        pedido = self._private_key.decrypt(
-            pedidocifrado.pedido,
-            padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=None))
-        return pedido
+        print("Longitud del texto cifrado: ", len(pedidocifrado.pedido))
+        print("Tamaño de la clave: ", self._private_key.key_size)
+        pedidof = []
+        for i in range(len(pedidocifrado.pedido)):
+            print(len(pedidocifrado.pedido[i]))
+            pedido = self._private_key.decrypt(
+                pedidocifrado.pedido[i],
+                padding.OAEP(
+                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                    algorithm=hashes.SHA256(),
+                    label=None))
+            pedidof.append(pedido)
+        print(pedidof)
+        return pedidof
 
     def requestCA(self):
         # Generate a CSR

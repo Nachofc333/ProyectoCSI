@@ -5,7 +5,7 @@ from restaurantes.restaurante1.Restaurante1 import Restaurante1
 from restaurantes.restaurante2.Restaurante2 import Restaurante2
 from restaurantes.restaurante3.Restaurante3 import Restaurante3
 from restaurantes.restaurante4.Restaurante4 import Restaurante4
-
+import binascii
 from pedido.pedidoCifrado import PedidoCifrado
 
 
@@ -46,16 +46,18 @@ class Controlador_restaurante(QtWidgets.QMainWindow):
 
     def mostrarPedidos(self):
         data = self.almacencifrado.data()
-
+        print(data)
         if data == []:
             QMessageBox.information(self, 'Error', 'Este restaurante no tiene pedidos registrados',
                                     QMessageBox.Ok)
             return
         for item in data:
             pedidocifrado = PedidoCifrado(
-                pedido = item["Pedido"].encode("latin-1"), modo=0)
+                pedido=[binascii.unhexlify(i.encode("latin-1").hex()) for i in item["Pedido"]], modo=1)
+            print("pedidocifrado.pedido: ", pedidocifrado.pedido)
             pedido = self.restaurante.desencriptarPedidos(pedidocifrado)
             self.almacen.add_item(pedido)
+
         self.terminar()
 
     def terminar(self):
