@@ -6,6 +6,7 @@ JSON_FILES_PATH = os.path.dirname(__file__)
 
 
 class CARestaurante(CAMaster):
+    _NAME = "CARestaurante"
     _FILE_NAME = JSON_FILES_PATH + "/CARestaurante_key.pem"
     _FILE_NAME_CSR = JSON_FILES_PATH + "/CARestaurante_csr.pem"
 

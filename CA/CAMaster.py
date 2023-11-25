@@ -3,23 +3,35 @@ import datetime
 
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
-
+from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.backends import default_backend
 from cryptography import x509
 from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives import hashes
 
 class CAMaster():
 
+    _NAME = ""
     _KEY = ""
     _FILE_NAME_KEY = ""
     _FILE_NAME_CERT = ""
     _FILE_NAME_CSR = ""
     def __init__(self):
         super().__init__()
+        self.name = self.generarNombre()
         self._private_key = ""
         self.public_key = ""
         self.cert = ""
 
+    def generarNombre(self):
+        subject = x509.Name([
+            x509.NameAttribute(NameOID.COUNTRY_NAME, "ES"),
+            x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, "Madrid"),
+            x509.NameAttribute(NameOID.LOCALITY_NAME, "Colmenarejo"),
+            x509.NameAttribute(NameOID.ORGANIZATION_NAME, self._NAME),
+            x509.NameAttribute(NameOID.COMMON_NAME, "glovo.com"),
+        ])
+        return subject
     def genererkey(self):
         if not os.path.exists(self._FILE_NAME_KEY):
             # Si no existe, genera la clave privada
@@ -68,4 +80,40 @@ class CAMaster():
             with open(self._FILE_NAME_CSR, "wb") as f:
                 f.write(csr.public_bytes(serialization.Encoding.PEM))
             self.crearCA(csr, self.public_key)
+
+    def verificarFirma(self, csr, public_key):
+        try:
+            # Verifica la firma de la CSR
+            public_key.verify(
+                csr.signature,
+                csr.tbs_certrequest_bytes,
+                padding.PKCS1v15(),
+                # Esto debería coincidir con el algoritmo utilizado para firmar la CSR
+                hashes.SHA256(),
+            )
+            return True
+        except Exception:
+            return False
+    def crearCA(self, csr, public_key):
+        if not self.verificarFirma(csr, public_key):
+            return None
+        certificate = x509.CertificateBuilder().subject_name(
+            csr.subject
+        ).issuer_name(
+            self.name
+        ).public_key(
+            public_key
+        ).serial_number(
+            x509.random_serial_number()
+        ).not_valid_before(
+            datetime.datetime.utcnow()
+        ).not_valid_after(
+            # El certificado será válido por 10 días
+            datetime.datetime.utcnow() + datetime.timedelta(days=730)
+        ).add_extension(
+            x509.SubjectAlternativeName([x509.DNSName(u"localhost")]),
+            critical=False,
+            # Firmamos el certificado con la clave privada de la Autoridad de Certificación
+        ).sign(self._private_key, hashes.SHA256(), default_backend())
+        return certificate
 

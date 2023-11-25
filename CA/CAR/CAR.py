@@ -13,8 +13,10 @@ JSON_FILES_PATH = os.path.dirname(__file__)
 class CAR(CAMaster):
     _FILE_NAME_KEY = JSON_FILES_PATH + "/CAR_key.pem"
     _FILE_NAME_CERT = JSON_FILES_PATH + "/CAR_cert.pem"
+    _NAME = "CAR"
     def __init__(self):
         super(CAMaster, self).__init__()
+
         self._private_key = self.genererkey()
         self.public_key = self._private_key.public_key()
         self.cert = self.generarCAR()
