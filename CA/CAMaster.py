@@ -16,6 +16,7 @@ class CAMaster():
     _FILE_NAME_KEY = ""
     _FILE_NAME_CERT = ""
     _FILE_NAME_CSR = ""
+
     def __init__(self):
         super().__init__()
         self.name = self.generarNombre()
@@ -32,6 +33,7 @@ class CAMaster():
             x509.NameAttribute(NameOID.COMMON_NAME, "glovo.com"),
         ])
         return subject
+
     def genererkey(self):
         if not os.path.exists(self._FILE_NAME_KEY):
             # Si no existe, genera la clave privada
@@ -55,7 +57,6 @@ class CAMaster():
                 password=None,
             )
         return private_key
-
 
     def generarCSR(self):
         if not os.path.exists(self._FILE_NAME_CERT):
@@ -94,6 +95,7 @@ class CAMaster():
             return True
         except Exception:
             return False
+
     def crearCA(self, csr, public_key):
         if not self.verificarFirma(csr, public_key):
             return None

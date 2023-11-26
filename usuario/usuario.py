@@ -13,7 +13,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography import x509
 from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives import hashes
-from CA.CAMaster import CAMaster
+from CA.CAUsuarios.CAUsuarios import CAUsuarios
 
 
 JSON_FILES_PATH = os.path.dirname(__file__)
@@ -120,7 +120,10 @@ class Usuario():
             # Provide various details about who we are.
             x509.NameAttribute(NameOID.COMMON_NAME, self.nombre),
         ])).sign(self._key_rsa, hashes.SHA256())
-        Autoridad = CAMaster()
-        Autoridad.crearCA(self.key_public, csr)
+        Autoridad = CAUsuarios()
+        certificado = Autoridad.requestCA2(self.key_public, csr)
+
+        #certificate = Autoridad.crearCA(self.key_public, csr)
+        """almacenar el certificado?"""
 
 
