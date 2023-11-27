@@ -1,31 +1,30 @@
+import binascii
+
 from interfaces.InicioW import Ui_login
-from interfaces.InicioW2 import Ui_Login
+from interfaces.InicioRW import Ui_loginR
+from pedido.pedidoCifrado import PedidoCifrado
 from usuario.usuario import Usuario
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 from controladores.controladorRegistro import Controlador_regristro
 from controladores.controladorPedido import Controlador_pedido
 from controladores.controladorSeleccionR import Controlador_SeleccionRestaurante
-from controladores.controladorLoginRestaurantes import Controlador_loginRestaurantes
-from almacen.jsonAlmacen import JsonAlmacen
+from almacen.jsonAlmacen2 import JsonAlmacen2
 from cryptography.hazmat.primitives.kdf.scrypt import Scrypt
 import os
 
-class Controlador_login(QtWidgets.QMainWindow):
+class Controlador_loginRestaurantes(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
-        self.ui = Ui_Login()  # Pantalla de inicio de sesion
+        self.ui = Ui_loginR()  # Pantalla de inicio de sesion
         self.ui.setupUi(self)
-        self.controlador_registro = Controlador_regristro()
-        self.controlador_loginR = Controlador_loginRestaurantes()
-        self.controlador_selecRestaurante = None
         self.InicializarGui()
-        self.almacen = JsonAlmacen()
+        self.almacen = JsonAlmacen2()
 
     def InicializarGui(self):
         self.ui.btnIniciarSesion.clicked.connect(self.validarCredenciales)  # Valida las credenciales si se ha dado a iniciar sesion
-        self.ui.btnRegistrar.clicked.connect(self.registrarUsuario)  # Pasa a registrar usuario si se ha dado click a registrar usuario
-        self.ui.btnIniciarSesion_2.clicked.connect(self.inicioRestaurantes)
+        self.ui.btnIniciarSesion_2.clicked.connect(self.inicioUsuarios)
+
     def validarCredenciales(self):  # Esta función comprueba que el usuario ya esta registrado en la base de datos
         usuario = self.ui.txt_user.text()
         password = self.ui.txt_password.text()
@@ -39,10 +38,9 @@ class Controlador_login(QtWidgets.QMainWindow):
                                match["telefono"],
                                match["salt"].encode("latin-1"))
 
-
         except:
             alerta = QMessageBox.information(self, 'Error', 'Usuario no encontrado', QMessageBox.Ok)
-        self.controlador_selecRestaurante = Controlador_SeleccionRestaurante(current_user)  # Abre la seccion del pedido si se ha iniciado sesion
+        self.mostrarPedidos()
         if match:
             salt = match["salt"]        # Se crea un salt al iniciar sesion para guardar una derivacion de la contraseña
             kdf = Scrypt(               # Se crea el mismo derivador que el usado para uniciar sesión
@@ -70,14 +68,26 @@ class Controlador_login(QtWidgets.QMainWindow):
         )
         key = kdf.derive(bytes(password, "utf-8"))
         self.almacen.modify_user(usuario, key, salt)    # Modificar los datos en el almacén
-        self.abrirVentanaPrincipal(match)
 
-    def registrarUsuario(self):
-        self.controlador_registro.show()
-
-    def abrirVentanaPrincipal(self, user):
-        self.controlador_selecRestaurante.show()
+    def inicioUsuarios(self):
         self.close()
 
-    def inicioRestaurantes(self):
-        self.controlador_loginR.show()
+    def mostrarPedidos(self):
+        data = self.almacencifrado.data()
+        print(data)
+        if data == []:
+            QMessageBox.information(self, 'Error', 'Este restaurante no tiene pedidos registrados',
+                                    QMessageBox.Ok)
+            return
+        for item in data:
+            pedidocifrado = PedidoCifrado(
+                pedido=[binascii.unhexlify(i.encode("latin-1").hex()) for i in item["Pedido"]], modo=1)
+            print("pedidocifrado.pedido: ", pedidocifrado.pedido)
+            pedido = self.restaurante.desencriptarPedidos(pedidocifrado)
+            self.almacen.add_item(pedido)
+
+        self.terminar()
+
+    def terminar(self):
+        alerta = QMessageBox.information(self, 'Exito', 'Se ha creado un almacen con el pedido desencriptado', QMessageBox.Ok)
+        self.close()

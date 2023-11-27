@@ -1,0 +1,26 @@
+[
+  {
+    "nombre": "Restaurante1",
+    "password": "r\u00c4GJ\u00ab\u00bf\u00f3\u0087&\u00bf\u00a2l\u0013&\u00cfb\r\u0090\u00a2Z\u0083\u00de\u00d6\u00da\u0019\u00ba\u009fg\u00b6\u00b6\u00f9\u00a9",
+    "telefono": "123456789",
+    "salt": "]>\u008c\u0083\u00ccP\r\u0090F\u0096d\u0004\u0091R\u00e42"
+  },
+  {
+    "nombre": "Restaurante2",
+    "password": "k&\u00ceA\u00b9\u000b\u0087\u000e\u0080\\\u009ed\u0095w\u00b4\\\u0091\u00f5!\\r\u00a4\u00b4\u00daMJ@\u0004\u00e4E\u00ed?",
+    "telefono": "123456789",
+    "salt": "A\u00e2\u00d4\u00a4\u009a\u00b7\u00c8v\u00db\u00a2\u0016\u0015\u00af]-\u00ba"
+  },
+  {
+    "nombre": "Restaurante3",
+    "password": "\u00c9\u000f\u008a?\u00a8(\u00bay\u0082\u00ac`\u00ab$l\u00dec(\u0018O\u00158\\\u00ab\u000f\u001a\u00c3\u00a8\u00b5\u00d4\u00973\u00f7",
+    "telefono": "123456789",
+    "salt": "i\u00e4\u00ac%+^\u008b[\u00ed\u008d\u00f4\u00ac\u00df\u00d56\u0099"
+  },
+  {
+    "nombre": "Restaurante4",
+    "password": "\u00bf\u008d\u00d0\u00077R9\u00b0\u00fa\u00d7\u00d5\u00be\u0091\u00c9~\u0080\u0087~\u00cf\u00e1\u00c6\u00dfb!+\u007f<U\u00d9\r\u001c\u00c4",
+    "telefono": "123456789",
+    "salt": "\u00a5L\u00a1\u00bf\u00eeH\u0086\u00b7y\u00f7\u00d3\u00b4\u00be\u00dc\u00bbx"
+  }
+]

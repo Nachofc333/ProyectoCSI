@@ -1,4 +1,8 @@
-from interfaces.PedidoW import Ui_Pedido
+from interfaces.PedidoR1W import Ui_Pedido1
+from interfaces.PedidoR2W import Ui_Pedido2
+from interfaces.PedidoR3W import Ui_Pedido3
+from interfaces.PedidoR4W import Ui_Pedido4
+
 from PyQt5 import QtWidgets
 import json
 from PyQt5.QtWidgets import QMessageBox
@@ -15,11 +19,20 @@ from restaurantes.restaurante4.Restaurante4 import Restaurante4
 from controladores.controladorRestaurantes import Controlador_restaurante
 
 
+
 class Controlador_pedido(QtWidgets.QMainWindow):
-    def __init__(self, user):
+    def __init__(self, user, restaurante):
         super().__init__()
         self.user = user
-        self.ui=Ui_Pedido()
+        self.restaurante = restaurante
+        if self.restaurante == "Restaurante1":
+            self.ui=Ui_Pedido1()
+        elif self.restaurante == "Restaurante2":
+            self.ui=Ui_Pedido2()
+        elif self.restaurante == "Restaurante3":
+            self.ui = Ui_Pedido3()
+        elif self.restaurante == "Restaurante4":
+            self.ui=Ui_Pedido4()
         self.ui.setupUi(self)
         self.InicializarGui()
         self.controlador_restaurantes = Controlador_restaurante()
@@ -30,10 +43,13 @@ class Controlador_pedido(QtWidgets.QMainWindow):
 
     def InicializarGui(self):
         self.ui.EnviarPedido.clicked.connect(self.ComprobarRestaurante)
-        self.ui.Pedidos.clicked.connect(self.IniciarRestaurantes)
+        #self.ui.Pedidos.clicked.connect(self.IniciarRestaurantes)
+        self.ui.Pedidos.clicked.connect(self.seleccionarrestaurante)
 
     def IniciarRestaurantes(self):
-        self.controlador_restaurantes.show()
+        self.close()
+
+    def seleccionarrestaurante(self):
         self.close()
 
     def ComprobarRestaurante(self):
@@ -55,7 +71,7 @@ class Controlador_pedido(QtWidgets.QMainWindow):
     def crearPedido(self):
         restaurante = self.ui.SelectorRestaurante.currentText()
         pedido = Pedido(
-            restaurante=restaurante,
+            restaurante=self.restaurante,
             pasta = self.ui.Pasta.checkState() -1 if self.ui.Pasta.checkState() >0 else 0,
             filete = self.ui.Filete.checkState() -1 if self.ui.Filete.checkState() > 0 else 0,
             lentejas = self.ui.Lentejas.checkState() -1 if self.ui.Lentejas.checkState() > 0 else 0,
@@ -66,16 +82,16 @@ class Controlador_pedido(QtWidgets.QMainWindow):
         print(ct)
         if ct:
             pedido_cifrado = PedidoCifrado(ct, 1)
-            if restaurante == "Restaurante1":
+            if self.restaurante == "Restaurante1":
                 restaurante = Restaurante1()
                 self.almacen1.add_item(pedido_cifrado)
-            elif restaurante == "Restaurante2":
+            elif self.restaurante == "Restaurante2":
                 restaurante = Restaurante2()
                 self.almacen2.add_item(pedido_cifrado)
-            elif restaurante == "Restaurante3":
+            elif self.restaurante == "Restaurante3":
                 restaurante = Restaurante3()
                 self.almacen3.add_item(pedido_cifrado)
-            elif restaurante == "Restaurante4":
+            elif self.restaurante == "Restaurante4":
                 restaurante = Restaurante4()
                 self.almacen4.add_item(pedido_cifrado)
             self.terminar()
