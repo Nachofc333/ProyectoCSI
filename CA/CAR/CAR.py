@@ -5,7 +5,7 @@ from cryptography import x509
 from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives import serialization
-
+from cryptography.hazmat.backends import default_backend
 
 JSON_FILES_PATH = os.path.dirname(__file__)
 
@@ -61,6 +61,3 @@ class CAR(CAMaster):
         )
         return cert
 
-    def crearCA(self, csr, public_key):
-        # verificar el csr y devolver el CA
-        pass

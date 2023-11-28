@@ -5,9 +5,10 @@ from CA.CAUsuarios.CAUsuarios import CAUsuarios
 from CA.CARestaurante.CARestaurante import CARestaurante
 
 import sys
-
 def generarCA():
     car = CAR()
+    caUsuarios = CAUsuarios()
+    caRestaurantes = CARestaurante()
 
 
 if __name__ == '__main__':                      #  Iniciador del código

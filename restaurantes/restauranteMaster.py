@@ -12,9 +12,12 @@ import os
 from cryptography import x509
 from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives import hashes
-from CA.CAMaster import CAMaster
+from CA.CAR.CAR import CAR
+from CA.CAUsuarios.CAUsuarios import CAUsuarios
+from CA.CARestaurante.CARestaurante import CARestaurante
 
 
+JSON_FILES_PATH = os.path.dirname(__file__)
 class RestauranteMaster(QtWidgets.QMainWindow):
     _KEY = ""
     _FILE_NAME = ""
@@ -28,6 +31,10 @@ class RestauranteMaster(QtWidgets.QMainWindow):
         self._key = b""
         self.almacen = None
         self.almacenDesencriptado = None
+        self.name = self.generarName()
+        self.cert = self.requestCA()
+        self.car = CAR()
+        self.CAUsuario = CAUsuarios()
 
     def descifrarKEY(self, key):  # funcion encargada de descifrar la key simetrica con la clave privada del restaurante
         key = self._private_key.decrypt(
@@ -47,38 +54,40 @@ class RestauranteMaster(QtWidgets.QMainWindow):
                 label=None))
         self.iv = iv
 
-    def descifrarPedido(self,ct, signature, ivencrip, pk_usuario):  # funcion encargada de descifrar el pedido con la key simetrica descifrada
-        self.descifrariv(ivencrip)
+    def descifrarPedido(self, ct, signature, ivencrip, pk_usuario, cert_usuario):  # funcion encargada de descifrar el pedido con la key simetrica descifrada
+        if self.validarCertificados(self.car.cert, self.CAUsuario.cert, cert_usuario):
 
-        cipher = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
+            self.descifrariv(ivencrip)
 
-        decryptor = cipher.decryptor()
-        plaintext = decryptor.update(ct) + decryptor.finalize()
+            cipher = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
 
-        # Quitar el padding
-        plaintextf = plaintext.rstrip(plaintext[-1:]).decode('latin-1')
+            decryptor = cipher.decryptor()
+            plaintext = decryptor.update(ct) + decryptor.finalize()
 
-        h = hmac.HMAC(self._key, hashes.SHA256())
-        h.update(plaintextf.encode("latin-1"))
-        hash = h.finalize()
-        # Crear un nuevo decryptor para la firma
+            # Quitar el padding
+            plaintextf = plaintext.rstrip(plaintext[-1:]).decode('latin-1')
 
-        try:
-            pk_usuario.verify(
-                signature,
-                hash,
-                padding.PSS(
-                    mgf=padding.MGF1(hashes.SHA256()),
-                    salt_length=padding.PSS.MAX_LENGTH
-                ),
-                hashes.SHA256()
-            )
-            alerta = QMessageBox.information(self, 'Pedido', plaintextf, QMessageBox.Ok)
-        except:
-            alerta = QMessageBox.information(self, 'Error', "Pedido modificado", QMessageBox.Ok)
-            return False
-        return self.encriptarPedidoAlmacen(plaintextf)
+            h = hmac.HMAC(self._key, hashes.SHA256())
+            h.update(plaintextf.encode("latin-1"))
+            hash = h.finalize()
+            # Crear un nuevo decryptor para la firma
 
+            try:
+                pk_usuario.verify(
+                    signature,
+                    hash,
+                    padding.PSS(
+                        mgf=padding.MGF1(hashes.SHA256()),
+                        salt_length=padding.PSS.MAX_LENGTH
+                    ),
+                    hashes.SHA256()
+                )
+                alerta = QMessageBox.information(self, 'Pedido', plaintextf, QMessageBox.Ok)
+            except:
+                alerta = QMessageBox.information(self, 'Error', "Pedido modificado", QMessageBox.Ok)
+                return False
+            return self.encriptarPedidoAlmacen(plaintextf)
+        return None
     def encriptarPedidoAlmacen(self, plaintext):
 
         ct = self.public_key.encrypt(
@@ -114,8 +123,6 @@ class RestauranteMaster(QtWidgets.QMainWindow):
         return private_key
 
     def desencriptarPedidos(self, pedidocifrado):  # Desencripta el almacén de pedidos encriptados de cada restaurante
-        print("Longitud del texto cifrado: ", len(pedidocifrado.pedido))
-        print("Tamaño de la clave: ", self._private_key.key_size)
         pedidof = []
         for i in range(len(pedidocifrado.pedido)):
             print(len(pedidocifrado.pedido[i]))
@@ -126,16 +133,40 @@ class RestauranteMaster(QtWidgets.QMainWindow):
                     algorithm=hashes.SHA256(),
                     label=None))
             pedidof.append(pedido)
-        print(pedidof)
         return pedidof
 
+    def generarName(self):
+        return x509.Name([
+            x509.NameAttribute(NameOID.COMMON_NAME, self._NAME),
+        ])
     def requestCA(self):
         # Generate a CSR
-        csr = x509.CertificateSigningRequestBuilder().subject_name(x509.Name([
-            # Provide various details about who we are.
-            x509.NameAttribute(NameOID.ORGANIZATION_NAME, self._NAME),
-        ])).sign(self._key_rsa, hashes.SHA256())
-        Autoridad = CAMaster()
-        Autoridad.crearCA(self.public_key, csr)
+        csr = x509.CertificateSigningRequestBuilder().subject_name(self.name).sign(self._private_key, hashes.SHA256())
+        Autoridad = CARestaurante()
+        certificado = Autoridad.crearCA(csr, self.public_key, self.name)
+        print(certificado)
+        path = JSON_FILES_PATH +"/"+ self._NAME + "/cert.pem"
+        with open(path, "wb") as f:
+            f.write(certificado.public_bytes(serialization.Encoding.PEM))
+        return certificado
+
+    def validarCertificados(self, caR, caUs, usuario):
+        # Se verifica la cadena de certificados
+        try:
+            caR.public_key().verify(
+                caUs.signature,
+                caUs.tbs_certificate_bytes,
+                padding.PKCS1v15(),
+                hashes.SHA256(),
+            )
+            caUs.public_key().verify(
+                usuario.signature,
+                usuario.tbs_certificate_bytes,
+                padding.PKCS1v15(),
+                hashes.SHA256(),
+            )
+            return True
+        except Exception:
+            return False
 
 

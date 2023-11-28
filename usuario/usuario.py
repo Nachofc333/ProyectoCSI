@@ -14,6 +14,8 @@ from cryptography import x509
 from cryptography.x509.oid import NameOID
 from cryptography.hazmat.primitives import hashes
 from CA.CAUsuarios.CAUsuarios import CAUsuarios
+from CA.CAR.CAR import CAR
+from CA.CARestaurante.CARestaurante import CARestaurante
 
 
 JSON_FILES_PATH = os.path.dirname(__file__)
@@ -27,9 +29,12 @@ class Usuario():
         self._key = os.urandom(32)
         self.iv = os.urandom(16)
         self.cipherkey = ""
-        self._key_rsa = b""
-        self.key_public = b""
-
+        self._key_rsa = self.leerkey()
+        self.key_public = self._key_rsa.public_key()
+        self.name = self.generarName()
+        self.cert = self.requestCA()
+        self.car = CAR()
+        self.CARestaurante = CARestaurante()
     def __dict__(self):
         return {"nombre": self.nombre, "password": self.contraseña, "telefono": self.telefono, "salt":self.salt}
 
@@ -56,15 +61,14 @@ class Usuario():
             restaurante = Restaurante4()
         else:
             print("error")
-        self.encriptarKEY(restaurante, self._key)  # llamada a encriptarKey, que encriptará la key con la PK del restaurante
-        ct = self.encriptarPedido(pedido, restaurante, self._key, self.iv)  # pedido encriptado simetricamente
-        if ct:
-            return ct
+        if self.validarCertificados(self.car.cert, self.CARestaurante.cert, restaurante.cert):
+            self.encriptarKEY(restaurante, self._key)  # llamada a encriptarKey, que encriptará la key con la PK del restaurante
+            ct = self.encriptarPedido(pedido, restaurante, self._key, self.iv)  # pedido encriptado simetricamente
+            if ct:
+                return ct
         return False
 
     def encriptarPedido(self, pedido, restaurante, key, iv):  # funcion encargada de encriptar el pedido de forma simetrica
-        self._key_rsa = self.leerkey()
-        self.key_public = self._key_rsa.public_key()
 
         h = hmac.HMAC(self._key, hashes.SHA256())
         h.update(str(pedido).encode('latin-1'))
@@ -89,7 +93,7 @@ class Usuario():
         )
 
         ivencrip = self.encriptariv(restaurante)
-        if restaurante.descifrarPedido(ct, signature, ivencrip, self.key_public):  # el restaurante descifrara el pedido con la key descifrada
+        if restaurante.descifrarPedido(ct, signature, ivencrip, self.key_public, self.cert):  # el restaurante descifrara el pedido con la key descifrada
             return ct, self.cipherkey, signature, ivencrip
         return False
 
@@ -114,16 +118,36 @@ class Usuario():
             )
         return private_key
 
+    def generarName(self):
+        return x509.Name([
+            x509.NameAttribute(NameOID.COMMON_NAME, self.nombre),
+        ])
     def requestCA(self):
         # Generate a CSR
-        csr = x509.CertificateSigningRequestBuilder().subject_name(x509.Name([
-            # Provide various details about who we are.
-            x509.NameAttribute(NameOID.COMMON_NAME, self.nombre),
-        ])).sign(self._key_rsa, hashes.SHA256())
+        csr = x509.CertificateSigningRequestBuilder().subject_name(self.name).sign(self._key_rsa, hashes.SHA256())
         Autoridad = CAUsuarios()
-        certificado = Autoridad.requestCA2(self.key_public, csr)
+        certificado = Autoridad.crearCA(csr, self.key_public , self.name)
 
-        #certificate = Autoridad.crearCA(self.key_public, csr)
-        """almacenar el certificado?"""
-
+        path = JSON_FILES_PATH + "/../almacen/" + self.nombre + "/cert.pem"
+        with open(path, "wb") as f:
+            f.write(certificado.public_bytes(serialization.Encoding.PEM))
+        return certificado
+    def validarCertificados(self, caR, caRes, restaurante):
+        # Se verifica la cadena de certificados
+        try:
+            caR.public_key().verify(
+                caRes.signature,
+                caRes.tbs_certificate_bytes,
+                pd.PKCS1v15(),
+                hashes.SHA256(),
+            )
+            caRes.public_key().verify(
+                restaurante.signature,
+                restaurante.tbs_certificate_bytes,
+                pd.PKCS1v15(),
+                hashes.SHA256(),
+            )
+            return True
+        except Exception:
+            return False
 
