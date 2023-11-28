@@ -24,11 +24,11 @@ class CAR(CAMaster):
     def generarCAR(self):
         if not os.path.exists(self._FILE_NAME_CERT):
             subject = issuer = x509.Name([
-                x509.NameAttribute(NameOID.COUNTRY_NAME, "US"),
-                x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, "California"),
-                x509.NameAttribute(NameOID.LOCALITY_NAME, "San Francisco"),
-                x509.NameAttribute(NameOID.ORGANIZATION_NAME, "My Company"),
-                x509.NameAttribute(NameOID.COMMON_NAME, "mysite.com"),
+                x509.NameAttribute(NameOID.COUNTRY_NAME, "ES"),
+                x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, "Madrid"),
+                x509.NameAttribute(NameOID.LOCALITY_NAME, "Colmenarejo"),
+                x509.NameAttribute(NameOID.ORGANIZATION_NAME, self._NAME),
+                x509.NameAttribute(NameOID.COMMON_NAME, "glovo.com"),
             ])
             cert = x509.CertificateBuilder().subject_name(
                 subject

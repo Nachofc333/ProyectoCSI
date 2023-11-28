@@ -86,17 +86,8 @@ class RestauranteMaster(QtWidgets.QMainWindow):
             except:
                 alerta = QMessageBox.information(self, 'Error', "Pedido modificado", QMessageBox.Ok)
                 return False
-            return self.encriptarPedidoAlmacen(plaintextf)
+            return True
         return None
-    def encriptarPedidoAlmacen(self, plaintext):
-
-        ct = self.public_key.encrypt(
-            plaintext.encode("latin-1"),
-            padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=None))
-        return ct
 
     def genererkey(self):
         if not os.path.exists(self._FILE_NAME):
