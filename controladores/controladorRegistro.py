@@ -71,10 +71,11 @@ class Controlador_regristro(QtWidgets.QMainWindow):
         if not re.match(r'^\+?1?\d{9,15}$', telefono):
             QMessageBox.information(self, 'Error', 'Por favor, introduce un número de teléfono válido', QMessageBox.Ok)
             return
-        usuario = Usuario(nombre, contraseña, telefono, salt)
-        path = JSON_FILES_PATH + "/../almacen/" + usuario.nombre
+
+        path = JSON_FILES_PATH + "/../almacen/" + nombre
         os.mkdir(path)
         self.genererkey(path)
+        usuario = Usuario(nombre, contraseña, telefono, salt)
         self.almacen.add_item(usuario)
         self.almacen.load_store()
         self.close()

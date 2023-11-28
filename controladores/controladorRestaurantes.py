@@ -18,7 +18,7 @@ class Controlador_restaurante(QtWidgets.QMainWindow):
 
         self.restaurante = None
         self.almacencifrado = None
-        self.alacen = None
+        self.almacen = None
 
 
     def InicializarGui(self):
@@ -44,7 +44,7 @@ class Controlador_restaurante(QtWidgets.QMainWindow):
             self.almacen = self.restaurante.almacenDesencriptado
         self.mostrarPedidos()
 
-    def mostrarPedidos(self):
+    """def mostrarPedidos(self):
         data = self.almacencifrado.data()
         print(data)
         if data == []:
@@ -58,7 +58,7 @@ class Controlador_restaurante(QtWidgets.QMainWindow):
             pedido = self.restaurante.desencriptarPedidos(pedidocifrado)
             self.almacen.add_item(pedido)
 
-        self.terminar()
+        self.terminar()"""
 
     def terminar(self):
         alerta = QMessageBox.information(self, 'Exito', 'Se ha creado un almacen con el pedido desencriptado', QMessageBox.Ok)

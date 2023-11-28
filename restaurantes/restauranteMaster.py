@@ -122,7 +122,7 @@ class RestauranteMaster(QtWidgets.QMainWindow):
             )
         return private_key
 
-    def desencriptarPedidos(self, pedidocifrado):  # Desencripta el almacén de pedidos encriptados de cada restaurante
+    """def desencriptarPedidos(self, pedidocifrado):  # Desencripta el almacén de pedidos encriptados de cada restaurante
         pedidof = []
         for i in range(len(pedidocifrado.pedido)):
             print(len(pedidocifrado.pedido[i]))
@@ -133,7 +133,25 @@ class RestauranteMaster(QtWidgets.QMainWindow):
                     algorithm=hashes.SHA256(),
                     label=None))
             pedidof.append(pedido)
-        return pedidof
+        return pedidof"""
+    def desencriptarPedidos(self, pedidocifrado):
+        self.descifrarKEY(pedidocifrado.key.encode("latin-1"))  # key descifrada
+
+        self.descifrariv(pedidocifrado.iv.encode("latin-1"))  # iv descifrado
+
+        # Desencripta la signature de forma simetrica para verificar que el pedido no se ha modificado
+        cipher_signature = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
+        decryptor_signature = cipher_signature.decryptor()
+        signature = decryptor_signature.update(
+            pedidocifrado.signature.encode("latin-1")) + decryptor_signature.finalize()
+
+        cipher = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
+        decryptor = cipher.decryptor()
+        plaintext = decryptor.update(pedidocifrado.pedido.encode("latin-1")) + decryptor.finalize()  # pedido descifrado
+
+        # Quitar el padding del pedido
+        plaintextf = plaintext.rstrip(plaintext[-1:]).decode('latin-1')
+        return plaintextf
 
     def generarName(self):
         return x509.Name([

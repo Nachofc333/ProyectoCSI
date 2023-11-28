@@ -39,10 +39,9 @@ class Controlador_login(QtWidgets.QMainWindow):
                                match["telefono"],
                                match["salt"].encode("latin-1"))
 
-
+            self.controlador_selecRestaurante = Controlador_SeleccionRestaurante(current_user)
         except:
             alerta = QMessageBox.information(self, 'Error', 'Usuario no encontrado', QMessageBox.Ok)
-        self.controlador_selecRestaurante = Controlador_SeleccionRestaurante(current_user)  # Abre la seccion del pedido si se ha iniciado sesion
         if match:
             salt = match["salt"]        # Se crea un salt al iniciar sesion para guardar una derivacion de la contraseña
             kdf = Scrypt(               # Se crea el mismo derivador que el usado para uniciar sesión

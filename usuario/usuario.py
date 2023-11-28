@@ -124,6 +124,7 @@ class Usuario():
         ])
     def requestCA(self):
         # Generate a CSR
+        print(self._key_rsa)
         csr = x509.CertificateSigningRequestBuilder().subject_name(self.name).sign(self._key_rsa, hashes.SHA256())
         Autoridad = CAUsuarios()
         certificado = Autoridad.crearCA(csr, self.key_public , self.name)
