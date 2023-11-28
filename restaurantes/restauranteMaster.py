@@ -122,28 +122,10 @@ class RestauranteMaster(QtWidgets.QMainWindow):
             )
         return private_key
 
-    """def desencriptarPedidos(self, pedidocifrado):  # Desencripta el almacén de pedidos encriptados de cada restaurante
-        pedidof = []
-        for i in range(len(pedidocifrado.pedido)):
-            print(len(pedidocifrado.pedido[i]))
-            pedido = self._private_key.decrypt(
-                pedidocifrado.pedido[i],
-                padding.OAEP(
-                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                    algorithm=hashes.SHA256(),
-                    label=None))
-            pedidof.append(pedido)
-        return pedidof"""
     def desencriptarPedidos(self, pedidocifrado):
         self.descifrarKEY(pedidocifrado.key.encode("latin-1"))  # key descifrada
 
         self.descifrariv(pedidocifrado.iv.encode("latin-1"))  # iv descifrado
-
-        # Desencripta la signature de forma simetrica para verificar que el pedido no se ha modificado
-        cipher_signature = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
-        decryptor_signature = cipher_signature.decryptor()
-        signature = decryptor_signature.update(
-            pedidocifrado.signature.encode("latin-1")) + decryptor_signature.finalize()
 
         cipher = Cipher(algorithms.AES(self._key), modes.CBC(self.iv))
         decryptor = cipher.decryptor()
@@ -162,7 +144,6 @@ class RestauranteMaster(QtWidgets.QMainWindow):
         csr = x509.CertificateSigningRequestBuilder().subject_name(self.name).sign(self._private_key, hashes.SHA256())
         Autoridad = CARestaurante()
         certificado = Autoridad.crearCA(csr, self.public_key, self.name)
-        print(certificado)
         path = JSON_FILES_PATH +"/"+ self._NAME + "/cert.pem"
         with open(path, "wb") as f:
             f.write(certificado.public_bytes(serialization.Encoding.PEM))

@@ -94,7 +94,7 @@ class Usuario():
 
         ivencrip = self.encriptariv(restaurante)
         if restaurante.descifrarPedido(ct, signature, ivencrip, self.key_public, self.cert):  # el restaurante descifrara el pedido con la key descifrada
-            return ct, self.cipherkey, signature, ivencrip
+            return ct, self.cipherkey, ivencrip
         return False
 
     def encriptarKEY(self, restaurante, key):  # funcion encargada de encriptar la key simetrica con la pk del restaurante al que se le realizo el pedido
@@ -124,7 +124,6 @@ class Usuario():
         ])
     def requestCA(self):
         # Generate a CSR
-        print(self._key_rsa)
         csr = x509.CertificateSigningRequestBuilder().subject_name(self.name).sign(self._key_rsa, hashes.SHA256())
         Autoridad = CAUsuarios()
         certificado = Autoridad.crearCA(csr, self.key_public , self.name)

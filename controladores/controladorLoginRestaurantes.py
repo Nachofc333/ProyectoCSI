@@ -80,7 +80,6 @@ class Controlador_loginRestaurantes(QtWidgets.QMainWindow):
 
     def mostrarPedidos(self):
         data = self.restaurante.almacen.data()
-        print(data)
         if data == []:
             QMessageBox.information(self, 'Error', 'Este restaurante no tiene pedidos registrados',
                                     QMessageBox.Ok)
@@ -89,7 +88,6 @@ class Controlador_loginRestaurantes(QtWidgets.QMainWindow):
             pedidocifrado = PedidoCifrado(
                 pedido=item["Pedido"].encode("latin-1"),
                 key=item["Cipher_key"].encode("latin-1"),
-                signature=item["Cipher_Signature"].encode("latin-1"),
                 iv=item["Cipher_IV"].encode("latin-1"))
             pedido = self.restaurante.desencriptarPedidos(pedidocifrado)
             self.almacendescifrado.add_item(pedido)

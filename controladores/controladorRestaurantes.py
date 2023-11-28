@@ -44,39 +44,6 @@ class Controlador_restaurante(QtWidgets.QMainWindow):
             self.almacen = self.restaurante.almacenDesencriptado
         self.mostrarPedidos()
 
-    """def mostrarPedidos(self):
-        data = self.almacencifrado.data()
-        print(data)
-        if data == []:
-            QMessageBox.information(self, 'Error', 'Este restaurante no tiene pedidos registrados',
-                                    QMessageBox.Ok)
-            return
-        for item in data:
-            pedidocifrado = PedidoCifrado(
-                pedido=[binascii.unhexlify(i.encode("latin-1").hex()) for i in item["Pedido"]], modo=1)
-            print("pedidocifrado.pedido: ", pedidocifrado.pedido)
-            pedido = self.restaurante.desencriptarPedidos(pedidocifrado)
-            self.almacen.add_item(pedido)
-
-        self.terminar()"""
-
     def terminar(self):
         alerta = QMessageBox.information(self, 'Exito', 'Se ha creado un almacen con el pedido desencriptado', QMessageBox.Ok)
         self.close()
-
-
-    """
-        def mostrarPedidos(self):
-        data = self.almacencifrado.data()
-        pedido = ""
-        if data == []:
-            QMessageBox.information(self, 'Error', 'Este restaurante no tiene pedidos registrados', QMessageBox.Ok)
-            return
-        for item in data:
-            for i in item:
-                if i != "Pedido":
-                    pedido += self.restaurante.desencriptarPedidos(i.encode("latin-1"))
-        self.almacen.add_item(pedido)
-        self.terminar()
-    """
-
