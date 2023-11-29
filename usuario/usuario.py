@@ -16,9 +16,11 @@ from cryptography.hazmat.primitives import hashes
 from CA.CAUsuarios.CAUsuarios import CAUsuarios
 from CA.CAR.CAR import CAR
 from CA.CARestaurante.CARestaurante import CARestaurante
+from datetime import datetime
 
 
 JSON_FILES_PATH = os.path.dirname(__file__)
+now = datetime.utcnow()
 
 class Usuario():
     def __init__(self, nombre, contraseña, telefono, salt):
@@ -33,8 +35,11 @@ class Usuario():
         self.key_public = self._key_rsa.public_key()
         self.name = self.generarName()
         self.cert = self.requestCA()
+        if not self.cert.not_valid_before <= now <= self.cert.not_valid_after:
+            self.recargarCA()
         self.car = CAR()
         self.CARestaurante = CARestaurante()
+
     def __dict__(self):
         return {"nombre": self.nombre, "password": self.contraseña, "telefono": self.telefono, "salt":self.salt}
 
@@ -132,6 +137,10 @@ class Usuario():
         with open(path, "wb") as f:
             f.write(certificado.public_bytes(serialization.Encoding.PEM))
         return certificado
+    def recargarCA(self):
+        path = JSON_FILES_PATH + "/../almacen/" + self.nombre + "/cert.pem"
+        os.remove(path)
+        self.cert = self.requestCA()
     def validarCertificados(self, caR, caRes, restaurante):
         # Se verifica la cadena de certificados
         try:

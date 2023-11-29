@@ -103,8 +103,8 @@ class CAMaster():
         ).not_valid_before(
             datetime.datetime.utcnow()
         ).not_valid_after(
-            # El certificado será válido por 10 días
-            datetime.datetime.utcnow() + datetime.timedelta(days=730)
+            # El certificado será válido por 10 días days=730
+            datetime.datetime.utcnow() + datetime.timedelta(minutes=3)
         ).add_extension(
             x509.SubjectAlternativeName([x509.DNSName(u"localhost")]),
             critical=False,
