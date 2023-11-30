@@ -11,7 +11,7 @@ class JsonAlmacenPedidoDesencriptado3(JsonStoreMaster):
     _ID_FIELD = "Pedido"
 
     def __init__(self)->None:
-        """Constructor de JsonDeliverStore"""
+        """Constructor De JsonDeliverStore"""
         super(JsonStoreMaster, self).__init__()
         if os.path.isfile(self._FILE_PATH):
             os.remove(self._FILE_PATH)

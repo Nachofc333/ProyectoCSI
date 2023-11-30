@@ -9,5 +9,5 @@ class JsonAlmacenPedidos3(JsonStoreMaster):
     _ID_FIELD = "Pedido"
 
     def __init__(self)->None:
-        """Constructor de JsonDeliverStore"""
+        """Constructor De JsonDeliverStore"""
         super(JsonStoreMaster, self).__init__()

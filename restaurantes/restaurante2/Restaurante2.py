@@ -11,6 +11,7 @@ class Restaurante2(RestauranteMaster):
     _FILE_NAME = JSON_FILES_PATH + "/keyR2.pem"
     _NAME = "restaurante2"
     def __init__(self):
+        # Creador
         super(RestauranteMaster, self).__init__()
         self._private_key =self.genererkey()
         self.public_key = self._private_key.public_key()

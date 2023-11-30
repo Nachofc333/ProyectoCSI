@@ -13,6 +13,7 @@ class Restaurante1(RestauranteMaster):
     _NAME = "restaurante1"
 
     def __init__(self):
+        #Creador
         super(RestauranteMaster, self).__init__()
         self._private_key =self.genererkey()
         self.public_key = self._private_key.public_key()
