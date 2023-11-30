@@ -144,15 +144,15 @@ class Usuario():
     def validarCertificados(self, caR, caRes, restaurante):
         # Se verifica la cadena de certificados
         try:
-            caR.public_key().verify(
-                caRes.signature,
-                caRes.tbs_certificate_bytes,
-                pd.PKCS1v15(),
-                hashes.SHA256(),
-            )
             caRes.public_key().verify(
                 restaurante.signature,
                 restaurante.tbs_certificate_bytes,
+                pd.PKCS1v15(),
+                hashes.SHA256(),
+            )
+            caR.public_key().verify(
+                caRes.signature,
+                caRes.tbs_certificate_bytes,
                 pd.PKCS1v15(),
                 hashes.SHA256(),
             )

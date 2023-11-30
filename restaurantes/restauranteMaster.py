@@ -150,15 +150,15 @@ class RestauranteMaster(QtWidgets.QMainWindow):
     def validarCertificados(self, caR, caUs, usuario):
         # Se verifica la cadena de certificados
         try:
-            caR.public_key().verify(
-                caUs.signature,
-                caUs.tbs_certificate_bytes,
-                padding.PKCS1v15(),
-                hashes.SHA256(),
-            )
             caUs.public_key().verify(
                 usuario.signature,
                 usuario.tbs_certificate_bytes,
+                padding.PKCS1v15(),
+                hashes.SHA256(),
+            )
+            caR.public_key().verify(
+                caUs.signature,
+                caUs.tbs_certificate_bytes,
                 padding.PKCS1v15(),
                 hashes.SHA256(),
             )
